@@ -6,6 +6,7 @@ import { Button, FilterGrid, FormInput, Table } from "../../../components/ui";
 import { useParameterListQuery } from "../../../api/parameter/parameterQuery";
 import { DEFAULT_PAGE_SIZE } from "../../../constants";
 import { useDebounce } from "../../../hooks/useDebounce";
+import { usePageTitle } from "../../../hooks/usePageTitle";
 import type { Parameter } from "../../../interfaces/parameter";
 import InternalServerError from "../../../components/templates/InternalServerError";
 import { ParameterDeleteModal } from "./components/ParameterDeleteModal";
@@ -18,6 +19,8 @@ interface ParameterFilterSchemaType {
 }
 
 export const ParameterPage = () => {
+  usePageTitle("Parameter Management");
+
   const hasAccess = useHasAccess();
   const [page, setPage] = useState(1);
   const [parameterFormMode, setParameterFormMode] = useState<"create" | "edit" | null>(null);

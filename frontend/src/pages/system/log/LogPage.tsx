@@ -13,6 +13,7 @@ import {
 import { useClearLogMutation, useLogListQuery } from "../../../api/log/logQuery";
 import { DEFAULT_PAGE_SIZE } from "../../../constants";
 import { useDebounce } from "../../../hooks/useDebounce";
+import { usePageTitle } from "../../../hooks/usePageTitle";
 import type { DropdownOption } from "../../../interfaces/dropdown";
 import type { LogLevel } from "../../../interfaces/log";
 import { useNotificationStore } from "../../../store/notifStore";
@@ -46,6 +47,8 @@ const getTodayDate = () => {
 };
 
 export const LogPage = () => {
+  usePageTitle("Log Monitoring");
+
   const hasAccess = useHasAccess();
   const queryClient = useQueryClient();
   const { addToast } = useNotificationStore();

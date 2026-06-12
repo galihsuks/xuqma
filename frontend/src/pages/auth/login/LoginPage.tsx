@@ -6,10 +6,13 @@ import { useApiFormError } from "../../../hooks/useApiFormError";
 import { queryClient } from "../../../lib/queryClient";
 import { useAuthActions } from "../../../store/authStore";
 import { useNotificationStore } from "../../../store/notifStore";
+import { usePageTitle } from "../../../hooks/usePageTitle";
 import { LoginForm } from "./components/LoginForm";
 import { type LoginSchemaType, loginSchema } from "./schemas/LoginSchema";
 
 export const LoginPage = () => {
+  usePageTitle("Login");
+
   const { login } = useAuthActions();
   const navigate = useNavigate();
   const { addToast } = useNotificationStore();

@@ -10,6 +10,7 @@ import { MenuFormModal } from "./components/MenuFormModal";
 import { MenuRow, type MenuListItem } from "./components/MenuRow";
 import InternalServerError from "../../../components/templates/InternalServerError";
 import { useHasAccess } from "../../../store/accessControlStore";
+import { usePageTitle } from "../../../hooks/usePageTitle";
 
 const flattenMenuItems = (items: MenuTreeNode[], depth = 0): MenuListItem[] => {
   return items.flatMap((item) => [
@@ -23,6 +24,8 @@ const getGroupLabel = (group: MenuTreeGroup["group"]) => {
 };
 
 export const MenuPage = () => {
+  usePageTitle("Menu Management");
+
   const hasAccess = useHasAccess();
   const {
     data: menuListData,

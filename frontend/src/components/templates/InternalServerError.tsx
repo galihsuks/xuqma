@@ -1,11 +1,14 @@
 import { ServerCrash } from "lucide-react";
 import { ErrorState } from "./ErrorState";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 type InternalServerErrorProps = {
   onReset?: () => void;
 };
 
 const InternalServerError = ({ onReset }: InternalServerErrorProps) => {
+  usePageTitle("500 Internal Server Error");
+
   return (
     <ErrorState
       code="500"

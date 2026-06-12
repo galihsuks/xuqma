@@ -1,5 +1,6 @@
 import { SearchX } from "lucide-react";
 import { ErrorState } from "./ErrorState";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 type NotFoundProps = {
   onReset?: () => void;
@@ -7,6 +8,8 @@ type NotFoundProps = {
 };
 
 const NotFound = ({ onReset, showHomeLink = true }: NotFoundProps) => {
+  usePageTitle("404 Not Found");
+
   return (
     <ErrorState
       code="404"

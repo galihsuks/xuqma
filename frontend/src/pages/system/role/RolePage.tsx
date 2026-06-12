@@ -7,6 +7,7 @@ import { useRoleListQuery } from "../../../api/role/roleQuery";
 import type { Role } from "../../../interfaces/role";
 import { DEFAULT_PAGE_SIZE } from "../../../constants";
 import { useDebounce } from "../../../hooks/useDebounce";
+import { usePageTitle } from "../../../hooks/usePageTitle";
 import { RoleAccessModal } from "./components/RoleAccessModal";
 import { RoleDeleteModal } from "./components/RoleDeleteModal";
 import { RoleFormModal } from "./components/RoleFormModal";
@@ -19,6 +20,8 @@ interface RoleFilterSchemaType {
 }
 
 export const RolePage = () => {
+  usePageTitle("Role Management");
+
   const hasAccess = useHasAccess();
   const [page, setPage] = useState(1);
   const { control, watch } = useForm<RoleFilterSchemaType>({

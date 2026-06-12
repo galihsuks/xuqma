@@ -1,11 +1,14 @@
 import { WifiOff } from "lucide-react";
 import { ErrorState } from "./ErrorState";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 type NetworkErrorProps = {
   onReset?: () => void;
 };
 
 const NetworkError = ({ onReset }: NetworkErrorProps) => {
+  usePageTitle("Network Error");
+
   return (
     <ErrorState
       code="NETWORK"

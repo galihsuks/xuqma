@@ -7,6 +7,7 @@ import { useUserListQuery } from "../../../api/user/userQuery";
 import { dropdownApi } from "../../../api/dropdown/dropdownApi";
 import { DEFAULT_PAGE_SIZE } from "../../../constants";
 import { useDebounce } from "../../../hooks/useDebounce";
+import { usePageTitle } from "../../../hooks/usePageTitle";
 import type { DropdownOption } from "../../../interfaces/dropdown";
 import type { UserListItem } from "../../../interfaces/user";
 import { UserDeleteModal } from "./components/UserDeleteModal";
@@ -26,6 +27,8 @@ const ALL_ROLE_OPTION: DropdownOption = {
 };
 
 export const UserPage = () => {
+  usePageTitle("User Account Management");
+
   const hasAccess = useHasAccess();
   const [page, setPage] = useState(1);
   const { control, watch } = useForm<UserFilterSchemaType>({

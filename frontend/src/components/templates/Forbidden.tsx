@@ -1,11 +1,14 @@
 import { ShieldAlert } from "lucide-react";
 import { ErrorState } from "./ErrorState";
+import { usePageTitle } from "../../hooks/usePageTitle";
 
 type ForbiddenProps = {
   onReset?: () => void;
 };
 
 const Forbidden = ({ onReset }: ForbiddenProps) => {
+  usePageTitle("403 Forbidden");
+
   return (
     <ErrorState
       code="403"

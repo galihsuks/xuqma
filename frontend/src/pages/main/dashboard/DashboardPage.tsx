@@ -1,9 +1,12 @@
 import { Button } from "../../../components/ui";
 import { PageHeader } from "../../../components/layout/PageHeader";
+import { usePageTitle } from "../../../hooks/usePageTitle";
 import { useUser } from "../../../store/authStore";
 import { useNotificationStore } from "../../../store/notifStore";
 
 export const DashboardPage = () => {
+  usePageTitle("Dashboard");
+
   const user = useUser();
   const addToast = useNotificationStore((state) => state.addToast);
 
