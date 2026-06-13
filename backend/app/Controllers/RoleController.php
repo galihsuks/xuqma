@@ -55,7 +55,7 @@ class RoleController extends BaseController
         $this->infoLog('[' . $this->UUID . '][' . $this->RouterCode . '][' . $this->UserID . '] Request API', ['path' => $this->request->getPath(), 'request' => $body]);
 
         $rules = [
-            'code' => 'required|min_length[2]|max_length[50]|alpha_numeric_punct',
+            'code' => 'required|min_length[1]|max_length[50]|alpha_numeric_punct',
             'name' => 'required|min_length[2]|max_length[100]',
             'description' => 'permit_empty|max_length[255]',
         ];
@@ -97,7 +97,7 @@ class RoleController extends BaseController
         }
 
         $rules = [
-            'code' => 'required|min_length[2]|max_length[50]|alpha_numeric_punct',
+            'code' => 'required|min_length[1]|max_length[50]|alpha_numeric_punct',
             'name' => 'required|min_length[2]|max_length[100]',
             'description' => 'permit_empty|max_length[255]',
         ];

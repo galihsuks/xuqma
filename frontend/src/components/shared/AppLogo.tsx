@@ -1,7 +1,7 @@
-import landscapeLogo from "../../assets/app_logo/landscape.svg";
+import landscapeLogo from "../../assets/app_logo/landscape.png";
 import landscapeBlackLogo from "../../assets/app_logo/landscape_black.svg";
 import landscapeWhiteLogo from "../../assets/app_logo/landscape_white.svg";
-import markLogo from "../../assets/app_logo/mark.svg";
+import markLogo from "../../assets/app_logo/mark.png";
 import markBlackLogo from "../../assets/app_logo/mark_black.svg";
 import markWhiteLogo from "../../assets/app_logo/mark_white.svg";
 import { cn } from "../../utils/cn";

@@ -10,6 +10,66 @@ export const DashboardPage = lazy(() =>
   })),
 );
 
+export const CustomerCartPage = lazy(() =>
+  import("../pages/customer/cart/CustomerCartPage").then((module) => ({
+    default: module.CustomerCartPage,
+  })),
+);
+
+export const CustomerOrdersPage = lazy(() =>
+  import("../pages/customer/orders/CustomerOrdersPage").then((module) => ({
+    default: module.CustomerOrdersPage,
+  })),
+);
+
+export const CustomerOrderDetailPage = lazy(() =>
+  import("../pages/customer/orders/CustomerOrderDetailPage").then((module) => ({
+    default: module.CustomerOrderDetailPage,
+  })),
+);
+
+export const CustomerHistoryPage = lazy(() =>
+  import("../pages/customer/history/CustomerHistoryPage").then((module) => ({
+    default: module.CustomerHistoryPage,
+  })),
+);
+
+export const CustomerProfilePage = lazy(() =>
+  import("../pages/customer/profile/CustomerProfilePage").then((module) => ({
+    default: module.CustomerProfilePage,
+  })),
+);
+
+export const ProductPage = lazy(() =>
+  import("../pages/admin/product/ProductPage").then((module) => ({
+    default: module.ProductPage,
+  })),
+);
+
+export const CategoryPage = lazy(() =>
+  import("../pages/admin/category/CategoryPage").then((module) => ({
+    default: module.CategoryPage,
+  })),
+);
+
+export const ArticlePage = lazy(() =>
+  import("../pages/admin/article/ArticlePage").then((module) => ({
+    default: module.ArticlePage,
+  })),
+);
+
+export const OrderPage = lazy(() =>
+  import("../pages/admin/order/OrderPage").then((module) => ({
+    default: module.OrderPage,
+  })),
+);
+
+export const OrderDetailPage = lazy(() =>
+  import("../pages/admin/order/OrderDetailPage").then((module) => ({
+    default: module.OrderDetailPage,
+  })),
+);
+
 export const MenuPage = lazy(() =>
   import("../pages/system/menu/MenuPage").then((module) => ({ default: module.MenuPage })),
 );

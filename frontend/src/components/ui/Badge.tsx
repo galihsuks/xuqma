@@ -31,7 +31,7 @@ export const Badge = ({ variant = "light", className, children }: BadgeProps) =>
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-lg px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.16em]",
+        "inline-flex items-center rounded-lg px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-center text-nowrap",
         variantClass[variant],
         className,
       )}

@@ -6,11 +6,16 @@ use App\Models\AppSupportModel;
 use App\Models\LogModel;
 use App\Models\MenuControlModel;
 use App\Models\MenuModel;
+use App\Models\OrderItemModel;
+use App\Models\OrderModel;
+use App\Models\ProductCategoryModel;
+use App\Models\ProductModel;
 use App\Models\RoleModel;
 use App\Models\RoleMenuControlModel;
 use App\Models\TokenModel;
 use App\Models\UserModel;
 use App\Models\UserRoleModel;
+use App\Models\ArticleModel;
 use App\Models\AuthModel;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
@@ -82,6 +87,31 @@ abstract class BaseController extends Controller
     */
     protected $roleMenuControlModel;
     
+    /**
+     * @var ProductCategoryModel
+    */
+    protected $productCategoryModel;
+
+    /**
+     * @var ProductModel
+    */
+    protected $productModel;
+
+    /**
+     * @var ArticleModel
+    */
+    protected $articleModel;
+
+    /**
+     * @var OrderModel
+    */
+    protected $orderModel;
+
+    /**
+     * @var OrderItemModel
+    */
+    protected $orderItemModel;
+    
     protected $UUID;
     protected $UserID;
     protected $RouterCode;
@@ -102,6 +132,11 @@ abstract class BaseController extends Controller
         $this->menuModel = new MenuModel();
         $this->menuControlModel = new MenuControlModel();
         $this->roleMenuControlModel = new RoleMenuControlModel();
+        $this->productCategoryModel = new ProductCategoryModel();
+        $this->productModel = new ProductModel();
+        $this->articleModel = new ArticleModel();
+        $this->orderModel = new OrderModel();
+        $this->orderItemModel = new OrderItemModel();
         $this->UUID = '';
         $this->UserID = '';
         $this->RouterCode = '';

@@ -45,7 +45,9 @@ $routes->options('(:any)', function () {
 // Public Routes (no auth needed)
 // ─────────────────────────────────────────────────────────────────────────────
 $routes->get('/', 'WebController::home');
-$routes->get('about', 'WebController::about');
+$routes->get('shop', 'WebController::shop');
+$routes->get('category/(:segment)', 'WebController::category/$1');
+$routes->get('products/(:segment)', 'WebController::productDetail/$1');
 $routes->get('articles', 'WebController::articles');
 $routes->get('articles/(:segment)', 'WebController::articleDetail/$1');
 $routes->group('api', function($routes) {
@@ -124,6 +126,42 @@ $routes->group('api', function($routes) {
         $routes->group('role-menu-control', function ($routes) {
             $routes->post('/',          'RoleMenuControlController::create');
             $routes->get('(:any)',      'RoleMenuControlController::index/$1');
+        });
+
+        // Product Category
+        $routes->group('product-category', function ($routes) {
+            $routes->post('/',          'ProductCategoryController::create');
+            $routes->get('/',           'ProductCategoryController::index');
+            $routes->get('(:any)',      'ProductCategoryController::detail/$1');
+            $routes->put('(:any)',      'ProductCategoryController::edit/$1');
+            $routes->delete('(:any)',   'ProductCategoryController::destroy/$1');
+        });
+
+        // Product
+        $routes->group('product', function ($routes) {
+            $routes->post('/',          'ProductController::create');
+            $routes->get('/',           'ProductController::index');
+            $routes->get('(:any)',      'ProductController::detail/$1');
+            $routes->put('(:any)',      'ProductController::edit/$1');
+            $routes->delete('(:any)',   'ProductController::destroy/$1');
+        });
+
+        // Article
+        $routes->group('article', function ($routes) {
+            $routes->post('/',          'ArticleController::create');
+            $routes->get('/',           'ArticleController::index');
+            $routes->get('(:any)',      'ArticleController::detail/$1');
+            $routes->put('(:any)',      'ArticleController::edit/$1');
+            $routes->delete('(:any)',   'ArticleController::destroy/$1');
+        });
+
+        // Order
+        $routes->group('order', function ($routes) {
+            $routes->post('/',          'OrderController::create');
+            $routes->get('/',           'OrderController::index');
+            $routes->get('(:any)',      'OrderController::detail/$1');
+            $routes->put('(:any)',      'OrderController::edit/$1');
+            $routes->delete('(:any)',   'OrderController::destroy/$1');
         });
 
         // Log

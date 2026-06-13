@@ -4,7 +4,6 @@ import {
   Circle,
   ChevronDown,
   ChevronsLeft,
-  LayoutDashboard,
   LogOut,
   X,
   type LucideIcon,
@@ -70,34 +69,12 @@ export const AppSidebar = () => {
   const navGroups = useMemo<NavGroup[]>(() => {
     const fromApi = accessMenuData?.data ?? [];
 
-    if (fromApi.length > 0) {
-      return fromApi
-        .map((group) => ({
-          group: group.group,
-          items: group.group_children.map(mapMenuNode),
-        }))
-        .filter((group) => group.items.length > 0);
-    }
-
-    return [
-      {
-        group: "main",
-        items: [
-          {
-            id: "fallback-dashboard",
-            name: "Dashboard",
-            description: null,
-            group: "main",
-            display: "1",
-            sort: "1",
-            label: "Dashboard",
-            icon: LayoutDashboard,
-            path: "/dashboard",
-            children: [],
-          },
-        ],
-      },
-    ];
+    return fromApi
+      .map((group) => ({
+        group: group.group,
+        items: group.group_children.map(mapMenuNode),
+      }))
+      .filter((group) => group.items.length > 0);
   }, [accessMenuData]);
 
   const onLogout = () => {
@@ -234,7 +211,7 @@ export const AppSidebar = () => {
             )}
           >
             <div className="min-w-0">
-              <p className="truncate text-xs tracking-[0.2em] text-dark-500">BASE APP</p>
+              <p className="truncate text-xs tracking-[0.2em] text-dark-500">ECOMMERCE</p>
               <AppLogo variant="text" className="truncate" />
             </div>
           </div>
@@ -265,6 +242,10 @@ export const AppSidebar = () => {
                   className={cn("h-9 rounded-xl bg-light-200", compact ? "mx-auto w-9" : "w-full")}
                 />
               ))}
+            </div>
+          ) : navGroups.length === 0 ? (
+            <div className="rounded-2xl border border-dark-200 bg-light-50 p-3 text-sm text-dark-500">
+              No accessible menu available.
             </div>
           ) : (
             navGroups.map((group) => (
@@ -333,7 +314,9 @@ export const AppSidebar = () => {
             <AppLogo variant="mark" className="h-7 w-10" />
           </div>
           <div className="min-w-0 overflow-hidden max-w-56 opacity-100">
-            <p className="truncate text-[9px] tracking-[0.2em] text-dark-500 mb-[-5px]">BASE APP</p>
+            <p className="truncate text-[9px] tracking-[0.2em] text-dark-500 mb-[-5px]">
+              ECOMMERCE
+            </p>
             <AppLogo variant="text" className="truncate" />
           </div>
         </div>

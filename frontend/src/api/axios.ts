@@ -14,6 +14,8 @@ const api = axios.create({
   baseURL: envVar.API_URL,
 });
 
+const appBasePath = import.meta.env.BASE_URL || "/";
+
 api.interceptors.request.use((config) => {
   const requestId = generateRequestId();
   (config as typeof config & { metadata?: RequestMeta }).metadata = {
@@ -52,7 +54,7 @@ api.interceptors.response.use(
       queryClient.clear();
       const { logout } = useAuthStore.getState().actions;
       logout();
-      window.location.href = "/login";
+      window.location.href = `${appBasePath}login`;
     }
 
     return Promise.reject(error);

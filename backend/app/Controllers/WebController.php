@@ -8,36 +8,94 @@ class WebController extends BaseController
 {
     public function home()
     {
+        $categories = $this->getStorefrontCategories();
+        $products = $this->getStorefrontProducts();
+        $featuredProducts = $this->getStorefrontFeaturedProducts();
+        $articles = $this->getStorefrontArticles();
+
         return view('web/home', $this->buildPageData([
             'activeNav' => 'home',
-            'description' => 'Base App Galih is a clean starter for SEO-friendly public pages and a React-powered admin panel.',
-            'heroBadge' => 'Public Website',
+            'categories' => array_slice($categories, 0, 4),
+            'description' => 'IT commerce storefront for accessories, headphones, monitors, VGA, RAM, and other computer components with SEO-friendly public pages.',
+            'featuredProducts' => $featuredProducts !== [] ? $featuredProducts : array_slice($products, 0, 4),
+            'heroBadge' => 'IT Commerce Storefront',
             'metaType' => 'website',
-            'pageTitle' => 'Build fast public pages and admin apps from one foundation',
-            'pageSubtitle' => 'Use CodeIgniter for SEO-focused pages, then hand off application-heavy flows to React under /admin.',
-            'seoTitle' => 'Base App Galih | SEO-ready public pages with React admin',
+            'latestArticles' => array_slice($articles, 0, 3),
+            'pageTitle' => 'Build your setup with curated IT gear, accessories, and upgrade-ready components',
+            'pageSubtitle' => 'Use CodeIgniter for SEO-focused storefront pages, and hand off cart, order, and admin workflows to React under /app.',
+            'seoTitle' => 'Galih Tech Commerce | IT accessories, components, and setup gear',
             'stats' => [
-                ['label' => 'SSR-friendly public pages', 'value' => 'CodeIgniter MVC'],
-                ['label' => 'Admin application', 'value' => 'React + Vite'],
-                ['label' => 'Shared API backend', 'value' => '/api/*'],
+                ['label' => 'Top categories', 'value' => 'Phone, audio, PC, display'],
+                ['label' => 'Operational split', 'value' => 'Storefront + React app'],
+                ['label' => 'Launch path', 'value' => '/app/customer and /app/admin'],
             ],
         ]));
     }
 
-    public function about()
+    public function shop()
     {
-        return view('web/about', $this->buildPageData([
-            'activeNav' => 'about',
-            'description' => 'Learn how Base App Galih splits SEO-friendly public pages and application dashboards without overloading the server.',
-            'metaType' => 'article',
-            'pageTitle' => 'A practical split between SEO pages and web app flows',
-            'pageSubtitle' => 'Keep public marketing pages lightweight and crawlable, while the admin experience stays dynamic under React.',
-            'seoTitle' => 'About Base App Galih | Public SEO pages + React admin',
-            'highlights' => [
-                'Public pages are rendered by CodeIgniter, which keeps HTML crawlable for search engines.',
-                'Admin flows stay inside React, where richer state management and interaction patterns are easier to maintain.',
-                'One API layer keeps auth, menu access, logs, and application data consistent across both sides.',
-            ],
+        return view('web/shop', $this->buildPageData([
+            'activeNav' => 'shop',
+            'categories' => $this->getStorefrontCategories(),
+            'description' => 'Browse SEO-friendly product discovery pages for phone accessories, headphones, VGA, RAM, monitor, and desk setup gear.',
+            'metaType' => 'website',
+            'pageTitle' => 'Shop modern IT gear for work, play, and content creation',
+            'pageSubtitle' => 'A storefront layer designed for search visibility, product discovery, and category landing pages.',
+            'products' => $this->getStorefrontProducts(),
+            'seoTitle' => 'Shop IT Products | Galih Tech Commerce',
+        ]));
+    }
+
+    public function category(string $slug)
+    {
+        $categories = $this->getStorefrontCategories();
+        $category = null;
+
+        foreach ($categories as $item) {
+            if ($item['slug'] === $slug) {
+                $category = $item;
+                break;
+            }
+        }
+
+        if ($category === null) {
+            throw PageNotFoundException::forPageNotFound();
+        }
+
+        $products = $this->getStorefrontProductsByCategorySlug($slug);
+
+        return view('web/category', $this->buildPageData([
+            'activeNav' => 'shop',
+            'category' => $category,
+            'description' => $category['description'],
+            'metaType' => 'website',
+            'pageTitle' => $category['name'],
+            'pageSubtitle' => $category['description'],
+            'products' => $products,
+            'seoTitle' => $category['name'] . ' | Galih Tech Commerce',
+        ]));
+    }
+
+    public function productDetail(string $slug)
+    {
+        $product = $this->getStorefrontProductBySlug($slug);
+
+        if ($product === null) {
+            throw PageNotFoundException::forPageNotFound();
+        }
+
+        $relatedProducts = array_values(array_filter(
+            $this->getStorefrontProducts(),
+            static fn (array $item): bool => $item['category_slug'] === $product['category_slug'] && $item['slug'] !== $product['slug'],
+        ));
+
+        return view('web/product_detail', $this->buildPageData([
+            'activeNav' => 'shop',
+            'description' => $product['summary'],
+            'metaType' => 'product',
+            'product' => $product,
+            'relatedProducts' => array_slice($relatedProducts, 0, 3),
+            'seoTitle' => $product['name'] . ' | Galih Tech Commerce',
         ]));
     }
 
@@ -45,25 +103,18 @@ class WebController extends BaseController
     {
         return view('web/articles', $this->buildPageData([
             'activeNav' => 'articles',
-            'articles' => $this->getArticles(),
-            'description' => 'Browse starter articles that explain how to structure SEO-friendly CodeIgniter pages alongside a React admin application.',
+            'articles' => $this->getStorefrontArticles(),
+            'description' => 'Explore IT buying guides, workspace setup notes, and component explainers built as SEO-friendly content pages.',
             'metaType' => 'website',
-            'pageTitle' => 'Articles and implementation notes',
-            'pageSubtitle' => 'Simple content pages that search engines can read directly, while your application UI can stay separate.',
-            'seoTitle' => 'Articles | Base App Galih',
+            'pageTitle' => 'Guides, buying notes, and IT commerce insights',
+            'pageSubtitle' => 'Use articles to bring search traffic into product education, setup recommendations, and trust-building storefront content.',
+            'seoTitle' => 'Articles | Galih Tech Commerce',
         ]));
     }
 
     public function articleDetail(string $slug)
     {
-        $article = null;
-
-        foreach ($this->getArticles() as $item) {
-            if ($item['slug'] === $slug) {
-                $article = $item;
-                break;
-            }
-        }
+        $article = $this->getStorefrontArticleBySlug($slug);
 
         if ($article === null) {
             throw PageNotFoundException::forPageNotFound();
@@ -74,13 +125,13 @@ class WebController extends BaseController
             'article' => $article,
             'description' => $article['excerpt'],
             'metaType' => 'article',
-            'seoTitle' => $article['title'] . ' | Base App Galih',
+            'seoTitle' => $article['title'] . ' | Galih Tech Commerce',
         ]));
     }
 
     private function buildPageData(array $data): array
     {
-        $appName = getenv('app.name') ?: 'Base App Galih';
+        $appName = getenv('app.name') ?: 'Galih Tech Commerce';
         $path = '/' . ltrim((string) $this->request->getPath(), '/');
         $currentPath = $path === '//' ? '/' : $path;
         $baseUrl = rtrim(base_url(), '/');
@@ -98,48 +149,139 @@ class WebController extends BaseController
         ], $data);
     }
 
-    private function getArticles(): array
+    private function getStorefrontCategories(): array
+    {
+        $categories = $this->productCategoryModel->getVisibleCategories();
+        return array_map(static function (array $category): array {
+            return [
+                'id' => $category['id'],
+                'slug' => $category['slug'],
+                'name' => $category['name'],
+                'description' => $category['description'],
+                'icon' => $category['icon'] ?: 'bi-grid',
+            ];
+        }, $categories);
+    }
+
+    private function getStorefrontProducts(): array
+    {
+        $products = $this->productModel->getVisibleProducts();
+        return array_map(fn (array $product): array => $this->normalizeStorefrontProduct($product), $products);
+    }
+
+    private function getStorefrontFeaturedProducts(): array
+    {
+        $products = $this->productModel->getFeaturedVisibleProducts(4);
+        if ($products === []) {
+            return [];
+        }
+
+        return array_map(fn (array $product): array => $this->normalizeStorefrontProduct($product), $products);
+    }
+
+    private function getStorefrontProductsByCategorySlug(string $slug): array
+    {
+        $products = $this->productModel->getVisibleProductsByCategorySlug($slug);
+        return array_map(fn (array $product): array => $this->normalizeStorefrontProduct($product), $products);
+    }
+
+    private function getStorefrontProductBySlug(string $slug): ?array
+    {
+        $product = $this->productModel->getVisibleProductBySlug($slug);
+        return $product ? $this->normalizeStorefrontProduct($product) : null;
+    }
+
+    private function getStorefrontArticles(): array
+    {
+        $articles = $this->articleModel->getPublishedArticles();
+        return array_map(fn (array $article): array => $this->normalizeStorefrontArticle($article), $articles);
+    }
+
+    private function getStorefrontArticleBySlug(string $slug): ?array
+    {
+        $article = $this->articleModel->getPublishedArticleBySlug($slug);
+        return $article ? $this->normalizeStorefrontArticle($article) : null;
+    }
+
+    private function normalizeStorefrontProduct(array $product): array
     {
         return [
-            [
-                'slug' => 'seo-public-pages-and-react-admin',
-                'title' => 'Combining SEO-friendly public pages with a React admin panel',
-                'excerpt' => 'A practical baseline for splitting public content and dynamic application flows without adding unnecessary infrastructure.',
-                'category' => 'Architecture',
-                'published_at' => '2026-06-09',
-                'read_time' => '5 min read',
-                'content' => [
-                    'When a project needs strong SEO, server-rendered public pages are still the simplest path. Search engines can crawl meaningful HTML immediately, and the server workload stays predictable.',
-                    'For complex dashboards, forms, and state-heavy modules, React remains a better fit. The split lets each layer focus on what it does best without forcing one framework to solve every problem.',
-                    'In this base app approach, CodeIgniter owns public routes and the API, while React focuses on /admin. That keeps deployment straightforward on smaller VPS instances.',
-                ],
-            ],
-            [
-                'slug' => 'why-shared-api-boundaries-matter',
-                'title' => 'Why a shared API boundary makes the stack easier to scale',
-                'excerpt' => 'A shared /api layer gives both public pages and app pages a single source of truth for business logic and permissions.',
-                'category' => 'Backend',
-                'published_at' => '2026-06-08',
-                'read_time' => '4 min read',
-                'content' => [
-                    'Even if public pages are rendered on the server and admin pages run in React, both sides still benefit from the same backend contracts.',
-                    'Validation, auth, role checks, menu access, and logging become easier to maintain because they are defined once.',
-                    'That reduces duplication and makes future apps more consistent when you reuse this base project.',
-                ],
-            ],
-            [
-                'slug' => 'keeping-vps-usage-practical',
-                'title' => 'Keeping VPS usage practical for multiple client projects',
-                'excerpt' => 'A lighter deployment model can be a good tradeoff when the server needs to host several apps at once.',
-                'category' => 'Operations',
-                'published_at' => '2026-06-07',
-                'read_time' => '3 min read',
-                'content' => [
-                    'Static frontend builds served directly by the web server are often cheaper operationally than keeping multiple Node processes alive.',
-                    'CodeIgniter plus a built React admin can be a very practical stack when you want predictable memory usage.',
-                    'The goal is not to avoid modern tooling, but to choose where runtime complexity actually adds value.',
-                ],
-            ],
+            'id' => $product['id'],
+            'slug' => $product['slug'],
+            'name' => $product['name'],
+            'category_slug' => $product['category_slug'],
+            'category_name' => $product['category_name'],
+            'price' => $this->formatRupiah($product['price']),
+            'stock_badge' => $product['stock_badge'],
+            'summary' => $product['summary'] ?? '',
+            'highlight' => $product['highlight'] ?? ($product['summary'] ?? ''),
+            'specs' => $this->extractSpecsFromDescription((string) ($product['description'] ?? '')),
         ];
+    }
+
+    private function normalizeStorefrontArticle(array $article): array
+    {
+        return [
+            'id' => $article['id'],
+            'slug' => $article['slug'],
+            'title' => $article['title'],
+            'excerpt' => $article['excerpt'] ?? '',
+            'category' => $article['category'],
+            'published_at' => $this->formatPublishedDate($article['published_at'] ?? null),
+            'read_time' => $article['read_time'] ?? '5 min read',
+            'content' => $this->normalizeArticleContent($article['content'] ?? null, $article['excerpt'] ?? ''),
+        ];
+    }
+
+    private function extractSpecsFromDescription(string $description): array
+    {
+        $normalized = preg_replace("/\r\n|\r/", "\n", trim($description));
+        if (!$normalized) {
+            return [];
+        }
+
+        $parts = preg_split('/\n+|(?<=\.)\s+/', $normalized) ?: [];
+        $specs = array_values(array_filter(array_map(
+            static fn (string $item): string => trim($item),
+            $parts,
+        )));
+
+        return array_slice($specs, 0, 4);
+    }
+
+    private function normalizeArticleContent(?string $content, string $excerpt): array
+    {
+        $normalized = preg_replace("/\r\n|\r/", "\n", trim((string) $content));
+        if ($normalized) {
+            $paragraphs = preg_split('/\n{2,}/', $normalized) ?: [];
+            $result = array_values(array_filter(array_map(
+                static fn (string $paragraph): string => trim($paragraph),
+                $paragraphs,
+            )));
+            if ($result !== []) {
+                return $result;
+            }
+        }
+
+        return $excerpt !== '' ? [$excerpt] : [];
+    }
+
+    private function formatPublishedDate(?string $publishedAt): string
+    {
+        if (!$publishedAt) {
+            return '';
+        }
+
+        $timestamp = strtotime($publishedAt);
+        if ($timestamp === false) {
+            return (string) $publishedAt;
+        }
+
+        return date('Y-m-d', $timestamp);
+    }
+
+    private function formatRupiah($amount): string
+    {
+        return 'Rp' . number_format((float) $amount, 0, ',', '.');
     }
 }

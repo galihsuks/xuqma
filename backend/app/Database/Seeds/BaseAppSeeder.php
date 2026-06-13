@@ -10,6 +10,9 @@ class BaseAppSeeder extends Seeder
     {
         $this->call('RoleSeeder');
         $this->call('BaseAppMenuSeeder');
+        $this->call('EcommerceMenuSeeder');
+        $this->call('EcommerceCatalogSeeder');
+        $this->call('EcommerceDemoOrderSeeder');
         $this->call('SuperAdminSeeder');
     }
 }

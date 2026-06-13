@@ -32,4 +32,20 @@ export const queryKeys = {
   log: {
     list: (params?: unknown) => ["log", "list", params ?? {}] as const,
   },
+  productCategory: {
+    list: (params?: unknown) => ["product-category", "list", params ?? {}] as const,
+    detail: (id: string) => ["product-category", "detail", id] as const,
+  },
+  product: {
+    list: (params?: unknown) => ["product", "list", params ?? {}] as const,
+    detail: (id: string) => ["product", "detail", id] as const,
+  },
+  article: {
+    list: (params?: unknown) => ["article", "list", params ?? {}] as const,
+    detail: (id: string) => ["article", "detail", id] as const,
+  },
+  order: {
+    list: (params?: unknown) => ["order", "list", params ?? {}] as const,
+    detail: (id: string) => ["order", "detail", id] as const,
+  },
 };

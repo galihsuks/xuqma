@@ -26,6 +26,7 @@ type InputKind =
   | "currency"
   | "password"
   | "email"
+  | "textarea"
   | "dropdown"
   | "date"
   | "time"
@@ -108,7 +109,12 @@ const parseTimeValue = (value: string) => {
 };
 
 const getErrorText = (error?: unknown) => {
-  if (typeof error === "object" && error && "message" in error && typeof (error as { message?: unknown }).message === "string") {
+  if (
+    typeof error === "object" &&
+    error &&
+    "message" in error &&
+    typeof (error as { message?: unknown }).message === "string"
+  ) {
     return (error as { message: string }).message;
   }
   return null;
@@ -175,11 +181,23 @@ export const FormInput = <T extends FieldValues>({
   }, [panelMonth]);
 
   const staticDropdownOptions = dropdownOptions ?? EMPTY_DROPDOWN_OPTIONS;
+  const filteredStaticDropdownOptions = useMemo(() => {
+    const normalizedKeywords = dropdownSearch.trim().toLowerCase();
+
+    if (!normalizedKeywords) {
+      return staticDropdownOptions;
+    }
+
+    return staticDropdownOptions.filter((option) =>
+      option.label.toLowerCase().includes(normalizedKeywords),
+    );
+  }, [dropdownSearch, staticDropdownOptions]);
+
   const activeDropdownOptions = loadDropdownOptions
     ? dynamicDropdownOptions.length > 0 || debouncedDropdownSearch !== ""
       ? dynamicDropdownOptions
       : staticDropdownOptions
-    : staticDropdownOptions;
+    : filteredStaticDropdownOptions;
   const selectedDropdownOptions = useMemo(() => {
     const optionMap = new Map<string, DropdownOption>();
 
@@ -206,8 +224,36 @@ export const FormInput = <T extends FieldValues>({
           selectedDropdownOptions.find((item) => item.value === stringValue)?.label ?? "";
 
         const renderTextInput = () => {
+          if (type === "textarea") {
+            return (
+              <div className="relative">
+                {Icon ? (
+                  <Icon className="pointer-events-none absolute top-3 left-3 h-4 w-4 text-dark-400" />
+                ) : null}
+                <textarea
+                  id={name}
+                  value={stringValue}
+                  placeholder={placeholder ?? ""}
+                  disabled={disabled}
+                  onBlur={field.onBlur}
+                  onChange={(event) => field.onChange(event.target.value)}
+                  className={cn(
+                    "min-h-28 w-full rounded-xl border border-dark-200 bg-white px-3.5 py-3 text-sm text-dark-800 outline-none transition placeholder:text-dark-400 focus:border-primary-400 focus:ring-2 focus:ring-primary-200",
+                    Icon ? "pl-10" : "",
+                  )}
+                />
+              </div>
+            );
+          }
+
           const actualType =
-            type === "password" ? (showPassword ? "text" : "password") : type === "currency" ? "text" : type;
+            type === "password"
+              ? showPassword
+                ? "text"
+                : "password"
+              : type === "currency"
+                ? "text"
+                : type;
           return (
             <div className="relative">
               {Icon ? (
@@ -228,7 +274,12 @@ export const FormInput = <T extends FieldValues>({
                   }
                   field.onChange(nextValue);
                 }}
-                className={cn(inputBaseClass, Icon ? "pl-10" : "", type === "password" ? "pr-11" : "", className)}
+                className={cn(
+                  inputBaseClass,
+                  Icon ? "pl-10" : "",
+                  type === "password" ? "pr-11" : "",
+                  className,
+                )}
               />
               {type === "password" ? (
                 <button
@@ -258,7 +309,10 @@ export const FormInput = <T extends FieldValues>({
             >
               <span>{selectedDropdownLabel || placeholder || "Select option"}</span>
               <ChevronDown
-                className={cn("h-4 w-4 text-dark-500 transition-transform", openDropdown ? "rotate-180" : "")}
+                className={cn(
+                  "h-4 w-4 text-dark-500 transition-transform",
+                  openDropdown ? "rotate-180" : "",
+                )}
               />
             </button>
             {openDropdown ? (
@@ -291,11 +345,14 @@ export const FormInput = <T extends FieldValues>({
                         type="button"
                         className={cn(
                           "block w-full rounded-lg px-2 py-2 text-left text-sm hover:bg-primary-50",
-                          option.value === stringValue ? "bg-primary-50 text-primary-700" : "text-dark-700",
+                          option.value === stringValue
+                            ? "bg-primary-50 text-primary-700"
+                            : "text-dark-700",
                         )}
                         onClick={() => {
                           field.onChange(option.value);
                           setOpenDropdown(false);
+                          setDropdownSearch("");
                         }}
                       >
                         {option.label}
@@ -314,7 +371,11 @@ export const FormInput = <T extends FieldValues>({
               type="button"
               disabled={disabled}
               onClick={() => setOpenDatePanel((prev) => !prev)}
-              className={cn(inputBaseClass, "flex items-center justify-between text-left", className)}
+              className={cn(
+                inputBaseClass,
+                "flex items-center justify-between text-left",
+                className,
+              )}
             >
               <span className={stringValue ? "text-dark-800" : "text-dark-400"}>
                 {stringValue ? formatDisplayDate(stringValue) : placeholder || "Select date"}
@@ -327,7 +388,9 @@ export const FormInput = <T extends FieldValues>({
                   <button
                     type="button"
                     className="rounded-md px-2 py-1 text-xs hover:bg-dark-100"
-                    onClick={() => setPanelMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))}
+                    onClick={() =>
+                      setPanelMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))
+                    }
                   >
                     Prev
                   </button>
@@ -337,7 +400,9 @@ export const FormInput = <T extends FieldValues>({
                   <button
                     type="button"
                     className="rounded-md px-2 py-1 text-xs hover:bg-dark-100"
-                    onClick={() => setPanelMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))}
+                    onClick={() =>
+                      setPanelMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))
+                    }
                   >
                     Next
                   </button>
@@ -355,7 +420,9 @@ export const FormInput = <T extends FieldValues>({
                         type="button"
                         className={cn(
                           "rounded-md py-1 text-sm hover:bg-primary-100",
-                          formatDateValue(cell) === stringValue ? "bg-primary-600 text-white hover:bg-primary-600" : "",
+                          formatDateValue(cell) === stringValue
+                            ? "bg-primary-600 text-white hover:bg-primary-600"
+                            : "",
                         )}
                         onClick={() => {
                           field.onChange(formatDateValue(cell));
@@ -391,13 +458,20 @@ export const FormInput = <T extends FieldValues>({
         const currentTimeParts = parseTimeValue(stringValue);
 
         const renderTimePanel = (forDatetime = false) => (
-          <div className={forDatetime ? "mt-2" : "relative"} ref={forDatetime ? undefined : panelRef}>
+          <div
+            className={forDatetime ? "mt-2" : "relative"}
+            ref={forDatetime ? undefined : panelRef}
+          >
             {!forDatetime ? (
               <button
                 type="button"
                 disabled={disabled}
                 onClick={() => setOpenTimePanel((prev) => !prev)}
-                className={cn(inputBaseClass, "flex items-center justify-between text-left", className)}
+                className={cn(
+                  inputBaseClass,
+                  "flex items-center justify-between text-left",
+                  className,
+                )}
               >
                 <span className={stringValue ? "text-dark-800" : "text-dark-400"}>
                   {stringValue || placeholder || "Select time"}
@@ -407,10 +481,17 @@ export const FormInput = <T extends FieldValues>({
             ) : null}
 
             {(forDatetime || openTimePanel) && (
-              <div className={cn(forDatetime ? "" : "absolute z-40 mt-2 w-full", "rounded-xl border border-dark-200 bg-white p-2 shadow-lg")}>
+              <div
+                className={cn(
+                  forDatetime ? "" : "absolute z-40 mt-2 w-full",
+                  "rounded-xl border border-dark-200 bg-white p-2 shadow-lg",
+                )}
+              >
                 <div className="grid grid-cols-2 gap-2">
                   <div className="rounded-xl border border-dark-100 p-2">
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-dark-500">Hour</p>
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-dark-500">
+                      Hour
+                    </p>
                     <div className="hide-scrollbar max-h-44 overflow-y-auto">
                       {hourOptions.map((hour) => (
                         <button
@@ -433,7 +514,9 @@ export const FormInput = <T extends FieldValues>({
                   </div>
 
                   <div className="rounded-xl border border-dark-100 p-2">
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-dark-500">Minute</p>
+                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-dark-500">
+                      Minute
+                    </p>
                     <div className="hide-scrollbar max-h-44 overflow-y-auto">
                       {minuteOptions.map((minute) => (
                         <button
@@ -480,11 +563,17 @@ export const FormInput = <T extends FieldValues>({
             <button
               type="button"
               disabled={disabled}
-              className={cn(inputBaseClass, "flex items-center justify-between text-left", className)}
+              className={cn(
+                inputBaseClass,
+                "flex items-center justify-between text-left",
+                className,
+              )}
               onClick={() => setOpenDatetimePanel((prev) => !prev)}
             >
               <span className={stringValue ? "text-dark-800" : "text-dark-400"}>
-                {stringValue ? formatDisplayDatetime(stringValue) : placeholder || "Select date & time"}
+                {stringValue
+                  ? formatDisplayDatetime(stringValue)
+                  : placeholder || "Select date & time"}
               </span>
               <CalendarDays className="h-4 w-4 text-dark-500" />
             </button>
@@ -498,102 +587,112 @@ export const FormInput = <T extends FieldValues>({
 
                   return (
                     <>
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-dark-500">Date</p>
-                <div className="grid grid-cols-7 gap-1 text-center text-xs text-dark-500">
-                  {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
-                    <div key={day} className="py-1">
-                      {day}
-                    </div>
-                  ))}
-                  {calendarCells.map((cell, index) =>
-                    cell ? (
-                      <button
-                        key={`${cell.toISOString()}-${index}`}
-                        type="button"
-                        className="rounded-md py-1 text-sm hover:bg-primary-100"
-                        onClick={() => {
-                          const currentTime = stringValue.includes(" ") ? stringValue.split(" ")[1] : "00:00";
-                          field.onChange(`${formatDateValue(cell)} ${currentTime}`);
-                        }}
-                      >
-                        {cell.getDate()}
-                      </button>
-                    ) : (
-                      <div key={`empty-dt-${index}`} />
-                    ),
-                  )}
-                </div>
-                <p className="mt-3 mb-2 text-xs font-semibold uppercase tracking-wider text-dark-500">Time</p>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="rounded-xl border border-dark-100 p-2">
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-dark-500">Hour</p>
-                    <div className="hide-scrollbar max-h-44 overflow-y-auto">
-                      {hourOptions.map((hour) => (
-                        <button
-                          key={`datetime-hour-${hour}`}
-                          type="button"
-                          className={cn(
-                            "block w-full rounded-md px-2 py-1.5 text-left text-sm hover:bg-primary-50",
-                            currentDatetimeTimeParts.hours === Number(hour)
-                              ? "bg-primary-100 text-primary-700"
-                              : "text-dark-700",
-                          )}
-                          onClick={() => {
-                            const currentDate = stringValue.includes(" ")
-                              ? stringValue.split(" ")[0]
-                              : formatDateValue(new Date());
-                            field.onChange(
-                              `${currentDate} ${formatTimeValue(Number(hour), currentDatetimeTimeParts.minutes)}`,
-                            );
-                          }}
-                        >
-                          {hour}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-dark-500">
+                        Date
+                      </p>
+                      <div className="grid grid-cols-7 gap-1 text-center text-xs text-dark-500">
+                        {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
+                          <div key={day} className="py-1">
+                            {day}
+                          </div>
+                        ))}
+                        {calendarCells.map((cell, index) =>
+                          cell ? (
+                            <button
+                              key={`${cell.toISOString()}-${index}`}
+                              type="button"
+                              className="rounded-md py-1 text-sm hover:bg-primary-100"
+                              onClick={() => {
+                                const currentTime = stringValue.includes(" ")
+                                  ? stringValue.split(" ")[1]
+                                  : "00:00";
+                                field.onChange(`${formatDateValue(cell)} ${currentTime}`);
+                              }}
+                            >
+                              {cell.getDate()}
+                            </button>
+                          ) : (
+                            <div key={`empty-dt-${index}`} />
+                          ),
+                        )}
+                      </div>
+                      <p className="mt-3 mb-2 text-xs font-semibold uppercase tracking-wider text-dark-500">
+                        Time
+                      </p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="rounded-xl border border-dark-100 p-2">
+                          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-dark-500">
+                            Hour
+                          </p>
+                          <div className="hide-scrollbar max-h-44 overflow-y-auto">
+                            {hourOptions.map((hour) => (
+                              <button
+                                key={`datetime-hour-${hour}`}
+                                type="button"
+                                className={cn(
+                                  "block w-full rounded-md px-2 py-1.5 text-left text-sm hover:bg-primary-50",
+                                  currentDatetimeTimeParts.hours === Number(hour)
+                                    ? "bg-primary-100 text-primary-700"
+                                    : "text-dark-700",
+                                )}
+                                onClick={() => {
+                                  const currentDate = stringValue.includes(" ")
+                                    ? stringValue.split(" ")[0]
+                                    : formatDateValue(new Date());
+                                  field.onChange(
+                                    `${currentDate} ${formatTimeValue(Number(hour), currentDatetimeTimeParts.minutes)}`,
+                                  );
+                                }}
+                              >
+                                {hour}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
 
-                  <div className="rounded-xl border border-dark-100 p-2">
-                    <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-dark-500">Minute</p>
-                    <div className="hide-scrollbar max-h-44 overflow-y-auto">
-                      {minuteOptions.map((minute) => (
+                        <div className="rounded-xl border border-dark-100 p-2">
+                          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-dark-500">
+                            Minute
+                          </p>
+                          <div className="hide-scrollbar max-h-44 overflow-y-auto">
+                            {minuteOptions.map((minute) => (
+                              <button
+                                key={`datetime-minute-${minute}`}
+                                type="button"
+                                className={cn(
+                                  "block w-full rounded-md px-2 py-1.5 text-left text-sm hover:bg-primary-50",
+                                  currentDatetimeTimeParts.minutes === Number(minute)
+                                    ? "bg-primary-100 text-primary-700"
+                                    : "text-dark-700",
+                                )}
+                                onClick={() => {
+                                  const currentDate = stringValue.includes(" ")
+                                    ? stringValue.split(" ")[0]
+                                    : formatDateValue(new Date());
+                                  field.onChange(
+                                    `${currentDate} ${formatTimeValue(currentDatetimeTimeParts.hours, Number(minute))}`,
+                                  );
+                                  setOpenDatetimePanel(false);
+                                }}
+                              >
+                                {minute}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-3 flex justify-end">
                         <button
-                          key={`datetime-minute-${minute}`}
                           type="button"
-                          className={cn(
-                            "block w-full rounded-md px-2 py-1.5 text-left text-sm hover:bg-primary-50",
-                            currentDatetimeTimeParts.minutes === Number(minute)
-                              ? "bg-primary-100 text-primary-700"
-                              : "text-dark-700",
-                          )}
+                          className="rounded-md px-2 py-1 text-xs text-dark-500 hover:bg-dark-100 hover:text-dark-700"
                           onClick={() => {
-                            const currentDate = stringValue.includes(" ")
-                              ? stringValue.split(" ")[0]
-                              : formatDateValue(new Date());
-                            field.onChange(
-                              `${currentDate} ${formatTimeValue(currentDatetimeTimeParts.hours, Number(minute))}`,
-                            );
+                            field.onChange("");
                             setOpenDatetimePanel(false);
                           }}
                         >
-                          {minute}
+                          Reset
                         </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-3 flex justify-end">
-                  <button
-                    type="button"
-                    className="rounded-md px-2 py-1 text-xs text-dark-500 hover:bg-dark-100 hover:text-dark-700"
-                    onClick={() => {
-                      field.onChange("");
-                      setOpenDatetimePanel(false);
-                    }}
-                  >
-                    Reset
-                  </button>
-                </div>
+                      </div>
                     </>
                   );
                 })()}
@@ -620,7 +719,9 @@ export const FormInput = <T extends FieldValues>({
                     ? renderDatetime()
                     : renderTextInput()}
 
-            {errorText ? <p className="mt-1 text-xs font-medium text-danger-600">{errorText}</p> : null}
+            {errorText ? (
+              <p className="mt-1 text-xs font-medium text-danger-600">{errorText}</p>
+            ) : null}
           </div>
         );
       }}

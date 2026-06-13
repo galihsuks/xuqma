@@ -17,7 +17,7 @@ export const LoginForm = ({ control, onSubmit, loading }: LoginFormProps) => {
       <div className="pointer-events-none absolute -bottom-20 right-0 h-72 w-72 rounded-full bg-secondary-300/40 blur-3xl" />
 
       <form
-        className="relative z-10 grid w-full max-w-5xl overflow-hidden rounded-3xl border border-primary-100 bg-white shadow-[0_20px_60px_-30px_rgba(14,165,233,0.55)] md:grid-cols-2"
+        className="relative z-10 grid w-full max-w-5xl overflow-hidden rounded-3xl border border-primary-100 bg-white shadow-[0_20px_60px_-30px_rgba(236,72,153,0.45)] md:grid-cols-2"
         onSubmit={onSubmit}
       >
         <aside className="hidden h-full flex-col justify-between bg-gradient-to-br from-primary-600 via-primary-500 to-secondary-400 p-8 text-white md:flex">
@@ -25,14 +25,14 @@ export const LoginForm = ({ control, onSubmit, loading }: LoginFormProps) => {
             <AppLogo variant="mark-white" className="h-10 w-10" />
           </div>
           <div>
-            <p className="text-sm uppercase tracking-[0.22em] text-white/80">Base App</p>
+            <p className="text-sm uppercase tracking-[0.22em] text-white/80">IT Commerce</p>
             <h2 className="mt-4 text-4xl font-semibold leading-tight">
-              Build faster with
+              Run customer and admin flows
               <br />
-              your own starter kit.
+              from one commerce workspace.
             </h2>
             <p className="mt-4 max-w-sm text-sm text-white/85">
-              A clean foundation with reusable architecture for scalable web applications.
+              SEO storefront pages can stay on CodeIgniter, while transactional customer and admin experiences live under React.
             </p>
           </div>
         </aside>
@@ -40,7 +40,7 @@ export const LoginForm = ({ control, onSubmit, loading }: LoginFormProps) => {
         <section className="p-7 sm:p-9">
           <AppLogo variant="landscape" className="h-13 w-42 mb-4 block md:hidden" />
           <h1 className="text-3xl font-semibold text-slate-800">Welcome back</h1>
-          <p className="mt-2 text-sm text-slate-500">Sign in to continue to your account.</p>
+          <p className="mt-2 text-sm text-slate-500">Sign in to continue to your customer or admin workspace.</p>
 
           <div className="mt-6">
             <FormInput

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthLoginMutation } from "../../../api/auth/authQuery";
@@ -15,6 +15,7 @@ export const LoginPage = () => {
 
   const { login } = useAuthActions();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { addToast } = useNotificationStore();
   const { mutate: loginMutation, isPending: isLoginPending } = useAuthLoginMutation();
   const { handleApiFormError } = useApiFormError({ logEvent: "login_submit_failed" });
@@ -38,7 +39,10 @@ export const LoginPage = () => {
         queryClient.clear();
         login(response.data.user, response.data.token);
         addToast(response.message, "success");
-        navigate("/dashboard");
+        const redirect = searchParams.get("redirect");
+        const fallbackRoute = "/admin/dashboard";
+        const nextRoute = redirect && redirect.startsWith("/") ? redirect : fallbackRoute;
+        navigate(nextRoute);
       },
       onError: (error) => {
         handleApiFormError(error, {

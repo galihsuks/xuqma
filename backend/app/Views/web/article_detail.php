@@ -2,7 +2,8 @@
 
 <?= $this->section('content') ?>
 <article class="mx-auto max-w-4xl px-5 py-16 lg:px-8 lg:py-24">
-    <a href="<?= base_url('/articles') ?>" class="inline-flex items-center rounded-full border border-dark-200 bg-white px-4 py-2 text-sm font-semibold text-dark-700 transition hover:border-primary-200 hover:text-primary-700">
+    <a href="<?= base_url('/articles') ?>" class="inline-flex items-center gap-2 rounded-full border border-dark-200 bg-white px-4 py-2 text-sm font-semibold text-dark-700 transition hover:border-primary-200 hover:text-primary-700">
+        <i class="bi bi-arrow-left"></i>
         Back to articles
     </a>
 
@@ -24,6 +25,24 @@
             <?php foreach ($article['content'] as $paragraph): ?>
                 <p><?= esc($paragraph) ?></p>
             <?php endforeach; ?>
+        </div>
+
+        <div class="mt-10 rounded-[24px] border border-secondary-100 bg-secondary-50/80 p-6">
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-secondary-700">Next step</p>
+            <h2 class="mt-3 text-2xl font-bold text-dark-900">Turn discovery into action inside the app</h2>
+            <p class="mt-3 text-sm leading-7 text-dark-600">
+                Public SEO pages explain products and categories. When users are ready to buy, cart and order actions can continue inside the React application under <span class="font-semibold text-dark-800">/app</span>.
+            </p>
+            <div class="mt-5 flex flex-wrap gap-3">
+                <a href="<?= base_url('/shop') ?>" class="inline-flex items-center gap-2 rounded-2xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-200/70 transition hover:bg-primary-500">
+                    <i class="bi bi-bag"></i>
+                    Browse products
+                </a>
+                <a href="<?= base_url('/app/login') ?>" class="inline-flex items-center gap-2 rounded-2xl border border-dark-200 bg-white px-5 py-3 text-sm font-semibold text-dark-700 transition hover:border-primary-200 hover:text-primary-700">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    Open app
+                </a>
+            </div>
         </div>
     </div>
 </article>

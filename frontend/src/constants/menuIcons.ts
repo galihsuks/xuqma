@@ -1,15 +1,18 @@
 import {
   BookOpen,
+  Boxes,
   Building2,
   ChartColumn,
   Circle,
   ClipboardList,
+  FilePenLine,
   FileBarChart2,
   FolderKanban,
   FolderTree,
   Home,
   LayoutDashboard,
   Logs,
+  PackageSearch,
   ReceiptText,
   Settings,
   Shield,
@@ -22,6 +25,7 @@ import type { DropdownOption } from "../interfaces/dropdown";
 
 export const menuIconMap: Record<string, LucideIcon> = {
   LayoutDashboard,
+  Boxes,
   Users,
   Shield,
   Settings,
@@ -37,6 +41,8 @@ export const menuIconMap: Record<string, LucideIcon> = {
   Building2,
   FolderKanban,
   FolderTree,
+  FilePenLine,
+  PackageSearch,
 };
 
 export const menuIconOptions: DropdownOption[] = Object.keys(menuIconMap)

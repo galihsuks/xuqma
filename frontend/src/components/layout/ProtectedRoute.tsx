@@ -49,7 +49,8 @@ export const PrivateRoute = () => {
   }, [clearAccessContext]);
 
   if (!isAuth) {
-    return <Navigate to="/login" replace />;
+    const redirect = `${location.pathname}${location.search}`;
+    return <Navigate to={`/login?redirect=${encodeURIComponent(redirect)}`} replace />;
   }
 
   if (accessMenuError || accessControlError) {
@@ -70,9 +71,13 @@ export const PrivateRoute = () => {
 
 export const GuestRoute = () => {
   const isAuth = useAuthStore((state) => state.isAuthenticated);
+  const location = useLocation();
 
   if (isAuth) {
-    return <Navigate to="/dashboard" replace />;
+    const redirect = new URLSearchParams(location.search).get("redirect");
+    const fallback = "/admin/dashboard";
+    const nextRoute = redirect && redirect.startsWith("/") ? redirect : fallback;
+    return <Navigate to={nextRoute} replace />;
   }
 
   return <Outlet />;
