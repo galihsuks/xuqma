@@ -23,7 +23,7 @@ class WebController extends BaseController
             'latestArticles' => array_slice($articles, 0, 3),
             'pageTitle' => 'Build your setup with curated IT gear, accessories, and upgrade-ready components',
             'pageSubtitle' => 'Use CodeIgniter for SEO-focused storefront pages, and hand off cart, order, and admin workflows to React under /app.',
-            'seoTitle' => 'Galih Tech Commerce | IT accessories, components, and setup gear',
+            'seoTitle' => 'Xuqma | IT accessories, components, and setup gear',
             'stats' => [
                 ['label' => 'Top categories', 'value' => 'Phone, audio, PC, display'],
                 ['label' => 'Operational split', 'value' => 'Storefront + React app'],
@@ -42,7 +42,7 @@ class WebController extends BaseController
             'pageTitle' => 'Shop modern IT gear for work, play, and content creation',
             'pageSubtitle' => 'A storefront layer designed for search visibility, product discovery, and category landing pages.',
             'products' => $this->getStorefrontProducts(),
-            'seoTitle' => 'Shop IT Products | Galih Tech Commerce',
+            'seoTitle' => 'Shop IT Products | Xuqma',
         ]));
     }
 
@@ -72,7 +72,7 @@ class WebController extends BaseController
             'pageTitle' => $category['name'],
             'pageSubtitle' => $category['description'],
             'products' => $products,
-            'seoTitle' => $category['name'] . ' | Galih Tech Commerce',
+            'seoTitle' => $category['name'] . ' | Xuqma',
         ]));
     }
 
@@ -95,7 +95,7 @@ class WebController extends BaseController
             'metaType' => 'product',
             'product' => $product,
             'relatedProducts' => array_slice($relatedProducts, 0, 3),
-            'seoTitle' => $product['name'] . ' | Galih Tech Commerce',
+            'seoTitle' => $product['name'] . ' | Xuqma',
         ]));
     }
 
@@ -108,7 +108,7 @@ class WebController extends BaseController
             'metaType' => 'website',
             'pageTitle' => 'Guides, buying notes, and IT commerce insights',
             'pageSubtitle' => 'Use articles to bring search traffic into product education, setup recommendations, and trust-building storefront content.',
-            'seoTitle' => 'Articles | Galih Tech Commerce',
+            'seoTitle' => 'Articles | Xuqma',
         ]));
     }
 
@@ -125,13 +125,13 @@ class WebController extends BaseController
             'article' => $article,
             'description' => $article['excerpt'],
             'metaType' => 'article',
-            'seoTitle' => $article['title'] . ' | Galih Tech Commerce',
+            'seoTitle' => $article['title'] . ' | Xuqma',
         ]));
     }
 
     private function buildPageData(array $data): array
     {
-        $appName = getenv('app.name') ?: 'Galih Tech Commerce';
+        $appName = getenv('app.name') ?: 'Xuqma';
         $path = '/' . ltrim((string) $this->request->getPath(), '/');
         $currentPath = $path === '//' ? '/' : $path;
         $baseUrl = rtrim(base_url(), '/');

@@ -97,6 +97,17 @@ const formatDisplayDatetime = (value: string) => {
   return `${formatDisplayDate(datePart)} ${timePart}`;
 };
 
+const parseDateValue = (value: string) => {
+  const [year, month, day] = value.split("-").map((part) => Number.parseInt(part, 10));
+
+  if (!year || !month || !day) {
+    return null;
+  }
+
+  const date = new Date(year, month - 1, day);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
 const parseTimeValue = (value: string) => {
   const [hoursPart = "00", minutesPart = "00"] = value.split(":");
   const hours = Number.parseInt(hoursPart, 10);
@@ -222,6 +233,17 @@ export const FormInput = <T extends FieldValues>({
         const stringValue = field.value ? String(field.value) : "";
         const selectedDropdownLabel =
           selectedDropdownOptions.find((item) => item.value === stringValue)?.label ?? "";
+        const syncPanelMonthFromStringValue = () => {
+          const datePart = stringValue.includes(" ") ? stringValue.split(" ")[0] : stringValue;
+          const parsedDate = parseDateValue(datePart);
+
+          if (parsedDate) {
+            setPanelMonth(new Date(parsedDate.getFullYear(), parsedDate.getMonth(), 1));
+            return;
+          }
+
+          setPanelMonth(new Date());
+        };
 
         const renderTextInput = () => {
           if (type === "textarea") {
@@ -370,7 +392,10 @@ export const FormInput = <T extends FieldValues>({
             <button
               type="button"
               disabled={disabled}
-              onClick={() => setOpenDatePanel((prev) => !prev)}
+              onClick={() => {
+                syncPanelMonthFromStringValue();
+                setOpenDatePanel((prev) => !prev);
+              }}
               className={cn(
                 inputBaseClass,
                 "flex items-center justify-between text-left",
@@ -568,7 +593,10 @@ export const FormInput = <T extends FieldValues>({
                 "flex items-center justify-between text-left",
                 className,
               )}
-              onClick={() => setOpenDatetimePanel((prev) => !prev)}
+              onClick={() => {
+                syncPanelMonthFromStringValue();
+                setOpenDatetimePanel((prev) => !prev);
+              }}
             >
               <span className={stringValue ? "text-dark-800" : "text-dark-400"}>
                 {stringValue
@@ -587,6 +615,33 @@ export const FormInput = <T extends FieldValues>({
 
                   return (
                     <>
+                      <div className="mb-2 flex items-center justify-between gap-2">
+                        <button
+                          type="button"
+                          className="rounded-md px-2 py-1 text-xs hover:bg-dark-100"
+                          onClick={() =>
+                            setPanelMonth(
+                              (prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1),
+                            )
+                          }
+                        >
+                          Prev
+                        </button>
+                        <p className="text-sm font-semibold text-dark-700">
+                          {panelMonth.toLocaleString("en-US", { month: "long", year: "numeric" })}
+                        </p>
+                        <button
+                          type="button"
+                          className="rounded-md px-2 py-1 text-xs hover:bg-dark-100"
+                          onClick={() =>
+                            setPanelMonth(
+                              (prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1),
+                            )
+                          }
+                        >
+                          Next
+                        </button>
+                      </div>
                       <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-dark-500">
                         Date
                       </p>
@@ -601,7 +656,12 @@ export const FormInput = <T extends FieldValues>({
                             <button
                               key={`${cell.toISOString()}-${index}`}
                               type="button"
-                              className="rounded-md py-1 text-sm hover:bg-primary-100"
+                              className={cn(
+                                "rounded-md py-1 text-sm hover:bg-primary-100",
+                                stringValue.startsWith(formatDateValue(cell))
+                                  ? "bg-primary-600 text-white hover:bg-primary-600"
+                                  : "",
+                              )}
                               onClick={() => {
                                 const currentTime = stringValue.includes(" ")
                                   ? stringValue.split(" ")[1]

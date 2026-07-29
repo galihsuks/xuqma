@@ -37,7 +37,11 @@ export const getCategoryTableColumns = ({
       header: "Storefront",
       className: "min-w-[140px]",
       render: (item) => (
-        <Badge variant={item.display === true || item.display === "1" ? "success-outline" : "light-outline"}>
+        <Badge
+          variant={
+            item.display === true || item.display === "1" ? "success-outline" : "light-outline"
+          }
+        >
           {item.display === true || item.display === "1" ? "Visible" : "Hidden"}
         </Badge>
       ),

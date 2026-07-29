@@ -144,14 +144,12 @@ export const AppSidebar = () => {
               <div
                 onClick={() => onClickNav(item, depth)}
                 className={cn(
-                  "select-none cursor-default group flex w-full items-center px-3 py-2.5 text-left text-sm transition-all duration-200",
+                  "select-none cursor-default group flex w-full items-center px-3 py-2.5 text-left text-sm transition-all duration-200 rounded-xl",
                   active
-                    ? "bg-primary-600 text-white shadow-[0_10px_20px_-10px_rgba(14,165,233,0.8)]"
+                    ? "bg-primary-600 text-white"
                     : "text-dark-600 hover:bg-primary-50 hover:text-primary-700",
                   compact ? "justify-center gap-0" : "gap-3",
-                  depth > 0 && !compact
-                    ? "ml-3 max-w-[calc(100%-var(--spacing)*3)] border-l border-dark-200 pl-4"
-                    : "rounded-xl",
+                  depth > 0 && !compact ? "ml-3 max-w-[calc(100%-var(--spacing)*3)] pl-4" : "",
                 )}
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -178,13 +176,13 @@ export const AppSidebar = () => {
           {!compact && item.children && item.children.length > 0 ? (
             <div
               className={cn(
-                "overflow-hidden transition-all duration-300 ease-out",
+                "overflow-hidden transition-all duration-300 ease-out ml-4 border-l border-dark-200",
                 expandedMenuId === item.id
                   ? "mt-1 max-h-[480px] opacity-100"
                   : "mt-0 max-h-0 opacity-0",
               )}
             >
-              <div>{renderNavItems(item.children, compact, depth + 1)}</div>
+              <div className="space-y-1">{renderNavItems(item.children, compact, depth + 1)}</div>
             </div>
           ) : null}
         </div>
