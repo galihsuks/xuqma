@@ -8,6 +8,7 @@ import { useCollapseDesktopSidebar } from "../../store/layoutStore";
 export interface TableColumn<T> {
   key: keyof T | string;
   header: string;
+  align?: "left" | "center" | "right";
   className?: string;
   hidden?: boolean;
   render?: (item: T, index: number) => ReactNode;
@@ -47,6 +48,12 @@ const buildPaginationItems = (currentPage: number, totalPages: number): Array<nu
   return ["...", currentPage - 1, currentPage, currentPage + 1, "..."];
 };
 
+const alignClassMap: Record<NonNullable<TableColumn<unknown>["align"]>, string> = {
+  left: "text-left",
+  center: "text-center",
+  right: "text-right",
+};
+
 export const Table = <T,>({
   columns,
   data,
@@ -82,7 +89,7 @@ export const Table = <T,>({
             <thead className="bg-primary-50/70">
               <tr>
                 {showNumber ? (
-                  <th className="w-[1%] whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-dark-700">
+                  <th className="text-center w-[1%] whitespace-nowrap px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-dark-700">
                     No
                   </th>
                 ) : null}
@@ -90,7 +97,8 @@ export const Table = <T,>({
                   <th
                     key={String(column.key)}
                     className={cn(
-                      "px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-dark-700",
+                      "px-4 py-3 text-xs font-semibold uppercase tracking-wider text-dark-700",
+                      alignClassMap[column.align ?? "left"],
                       column.className,
                     )}
                   >
@@ -108,10 +116,7 @@ export const Table = <T,>({
                 </tr>
               ) : data.length === 0 ? (
                 <tr>
-                  <td
-                    className="px-4 py-6 text-sm text-dark-500"
-                    colSpan={columnCount}
-                  >
+                  <td className="px-4 py-6 text-sm text-dark-500" colSpan={columnCount}>
                     {emptyText}
                   </td>
                 </tr>
@@ -119,7 +124,7 @@ export const Table = <T,>({
                 data.map((item, index) => (
                   <tr key={rowKey ? rowKey(item, index) : `${index}`}>
                     {showNumber ? (
-                      <td className="px-4 py-3 text-sm font-medium text-dark-500">
+                      <td className="text-center px-4 py-3 text-sm font-medium text-dark-500">
                         {pagination
                           ? (pagination.page - 1) * pagination.page_size + index + 1
                           : index + 1}
@@ -128,7 +133,11 @@ export const Table = <T,>({
                     {visibleColumns.map((column) => (
                       <td
                         key={String(column.key)}
-                        className={cn("px-4 py-3 text-sm text-dark-700", column.className)}
+                        className={cn(
+                          "px-4 py-3 text-sm text-dark-700",
+                          alignClassMap[column.align ?? "left"],
+                          column.className,
+                        )}
                       >
                         {column.render
                           ? column.render(item, index)

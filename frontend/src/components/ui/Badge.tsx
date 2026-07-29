@@ -1,14 +1,31 @@
 import type { ReactNode } from "react";
-import type { ButtonVariant } from "./Button";
 import { cn } from "../../utils/cn";
 
+type BadgeVariant =
+  | "primary"
+  | "primary-outline"
+  | "secondary"
+  | "secondary-outline"
+  | "success"
+  | "success-outline"
+  | "info"
+  | "info-outline"
+  | "warning"
+  | "warning-outline"
+  | "danger"
+  | "danger-outline"
+  | "light"
+  | "light-outline"
+  | "dark"
+  | "dark-outline";
+
 interface BadgeProps {
-  variant?: ButtonVariant;
+  variant?: BadgeVariant;
   className?: string;
   children: ReactNode;
 }
 
-const variantClass: Record<ButtonVariant, string> = {
+const variantClass: Record<BadgeVariant, string> = {
   primary: "bg-primary-600 text-white border border-primary-600",
   "primary-outline": "bg-primary-50 text-primary-700 border border-primary-500",
   secondary: "bg-secondary-50 text-secondary-500",

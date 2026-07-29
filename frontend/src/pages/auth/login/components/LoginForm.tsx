@@ -3,6 +3,7 @@ import type { Control } from "react-hook-form";
 import { Button, FormInput } from "../../../../components/ui";
 import { AppLogo } from "../../../../components/shared/AppLogo";
 import type { LoginSchemaType } from "../schemas/LoginSchema";
+import { ArrowLeft } from "lucide-react";
 
 interface LoginFormProps {
   control: Control<LoginSchemaType>;
@@ -25,7 +26,7 @@ export const LoginForm = ({ control, onSubmit, loading }: LoginFormProps) => {
             <div className="inline-flex h-12 w-12 items-center justify-center">
               <AppLogo variant="icon" className="h-10 w-10" />
             </div>
-            <p className="text-sm uppercase tracking-[0.22em] text-white/80">IT Commerce</p>
+            <p className="text-sm uppercase tracking-[0.22em] text-white/80">XUQMA</p>
           </div>
           <div>
             <h2 className="mt-4 text-4xl font-semibold leading-tight max-w-[350px]">
@@ -63,8 +64,13 @@ export const LoginForm = ({ control, onSubmit, loading }: LoginFormProps) => {
             />
           </div>
 
-          <Button type="submit" buttonType="submit" loading={loading} className="mt-6 w-full">
-            {loading ? "Signing in..." : "Sign in"}
+          <div className="mb-2">
+            <Button type="submit" buttonType="submit" loading={loading} className="mt-6 w-full">
+              {loading ? "Signing in..." : "Sign in"}
+            </Button>
+          </div>
+          <Button type="link" link={"/"} icon={ArrowLeft} variant="primary-text">
+            View all products
           </Button>
         </section>
       </form>

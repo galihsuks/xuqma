@@ -18,7 +18,9 @@ import {
 } from "../../../store/customerCartStore";
 import {
   useCustomerDefaultAddress,
-  useCustomerProfilePreferences,
+  useCustomerPreferredCourierService,
+  useCustomerPreferredPaymentMethod,
+  useCustomerPreferredPhone,
 } from "../../../store/customerProfileStore";
 import { useNotificationStore } from "../../../store/notifStore";
 import {
@@ -56,7 +58,9 @@ export const CustomerCartPage = () => {
   const { addToast } = useNotificationStore();
   const { handleApiFormError } = useApiFormError({ logEvent: "customer_checkout_failed" });
   const defaultAddress = useCustomerDefaultAddress();
-  const profilePreferences = useCustomerProfilePreferences();
+  const preferredPhone = useCustomerPreferredPhone();
+  const preferredCourierService = useCustomerPreferredCourierService();
+  const preferredPaymentMethod = useCustomerPreferredPaymentMethod();
   const addProductId = searchParams.get("add_product") ?? "";
   const addQty = Math.max(1, Number(searchParams.get("qty") ?? "1") || 1);
   const { data: directProductDetailData } = useProductDetailQuery(addProductId);
@@ -66,10 +70,10 @@ export const CustomerCartPage = () => {
   const { control, getValues, handleSubmit, reset, setValue } = useForm<CustomerCheckoutSchemaType>({
     resolver: zodResolver(customerCheckoutSchema),
     defaultValues: {
-      customer_phone: profilePreferences.preferred_phone || defaultAddress?.phone || "",
+      customer_phone: preferredPhone || defaultAddress?.phone || "",
       shipping_address: defaultAddress?.address || "",
-      courier_service: profilePreferences.preferred_courier_service,
-      payment_method: profilePreferences.preferred_payment_method,
+      courier_service: preferredCourierService,
+      payment_method: preferredPaymentMethod,
       order_note: "",
     },
   });
@@ -98,8 +102,8 @@ export const CustomerCartPage = () => {
   }, [addItem, addProductId, addQty, addToast, directProductDetailData?.data, searchParams, setSearchParams]);
 
   useEffect(() => {
-    if (getValues("customer_phone").trim() === "" && profilePreferences.preferred_phone !== "") {
-      setValue("customer_phone", profilePreferences.preferred_phone);
+    if (getValues("customer_phone").trim() === "" && preferredPhone !== "") {
+      setValue("customer_phone", preferredPhone);
     }
 
     if (getValues("shipping_address").trim() === "" && defaultAddress?.address) {
@@ -107,18 +111,18 @@ export const CustomerCartPage = () => {
     }
 
     if (getValues("courier_service").trim() === "") {
-      setValue("courier_service", profilePreferences.preferred_courier_service);
+      setValue("courier_service", preferredCourierService);
     }
 
     if (getValues("payment_method").trim() === "") {
-      setValue("payment_method", profilePreferences.preferred_payment_method);
+      setValue("payment_method", preferredPaymentMethod);
     }
   }, [
     defaultAddress?.address,
     getValues,
-    profilePreferences.preferred_courier_service,
-    profilePreferences.preferred_payment_method,
-    profilePreferences.preferred_phone,
+    preferredCourierService,
+    preferredPaymentMethod,
+    preferredPhone,
     setValue,
   ]);
 

@@ -9,7 +9,9 @@ import { useUser } from "../../../store/authStore";
 import {
   useCustomerDefaultAddress,
   useCustomerProfileActions,
-  useCustomerProfilePreferences,
+  useCustomerPreferredCourierService,
+  useCustomerPreferredPaymentMethod,
+  useCustomerPreferredPhone,
   useCustomerSavedAddresses,
   type CustomerSavedAddress,
 } from "../../../store/customerProfileStore";
@@ -37,7 +39,9 @@ export const CustomerProfilePage = () => {
   const { addToast } = useNotificationStore();
   const addresses = useCustomerSavedAddresses();
   const defaultAddress = useCustomerDefaultAddress();
-  const preferences = useCustomerProfilePreferences();
+  const preferredPhone = useCustomerPreferredPhone();
+  const preferredPaymentMethod = useCustomerPreferredPaymentMethod();
+  const preferredCourierService = useCustomerPreferredCourierService();
   const { saveProfilePreferences, removeAddress, setDefaultAddress, upsertAddress } =
     useCustomerProfileActions();
   const [modalMode, setModalMode] = useState<"create" | "edit" | null>(null);
@@ -46,14 +50,14 @@ export const CustomerProfilePage = () => {
   const { control, handleSubmit } = useForm<CustomerProfileSchemaType>({
     resolver: zodResolver(customerProfileSchema),
     defaultValues: {
-      preferred_phone: preferences.preferred_phone,
-      preferred_payment_method: preferences.preferred_payment_method,
-      preferred_courier_service: preferences.preferred_courier_service,
+      preferred_phone: preferredPhone,
+      preferred_payment_method: preferredPaymentMethod,
+      preferred_courier_service: preferredCourierService,
     },
     values: {
-      preferred_phone: preferences.preferred_phone,
-      preferred_payment_method: preferences.preferred_payment_method,
-      preferred_courier_service: preferences.preferred_courier_service,
+      preferred_phone: preferredPhone,
+      preferred_payment_method: preferredPaymentMethod,
+      preferred_courier_service: preferredCourierService,
     },
   });
 

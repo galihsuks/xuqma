@@ -50,6 +50,7 @@ export const getCategoryTableColumns = ({
       key: "sort",
       header: "Sort",
       className: "min-w-[110px]",
+      align: "center",
     },
     {
       key: "actions",

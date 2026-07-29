@@ -109,12 +109,14 @@ export const useCustomerProfileStore = create<CustomerProfileState>()(
   ),
 );
 
-export const useCustomerProfilePreferences = () =>
-  useCustomerProfileStore((state) => ({
-    preferred_phone: state.preferred_phone,
-    preferred_payment_method: state.preferred_payment_method,
-    preferred_courier_service: state.preferred_courier_service,
-  }));
+export const useCustomerPreferredPhone = () =>
+  useCustomerProfileStore((state) => state.preferred_phone);
+
+export const useCustomerPreferredPaymentMethod = () =>
+  useCustomerProfileStore((state) => state.preferred_payment_method);
+
+export const useCustomerPreferredCourierService = () =>
+  useCustomerProfileStore((state) => state.preferred_courier_service);
 
 export const useCustomerSavedAddresses = () =>
   useCustomerProfileStore((state) => state.addresses);
