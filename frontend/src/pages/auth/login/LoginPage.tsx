@@ -40,7 +40,8 @@ export const LoginPage = () => {
         login(response.data.user, response.data.token);
         addToast(response.message, "success");
         const redirect = searchParams.get("redirect");
-        const fallbackRoute = "/admin/dashboard";
+        const fallbackRoute =
+          response.data.user.role?.code === "C" ? "/customer/cart" : "/admin/dashboard";
         const nextRoute = redirect && redirect.startsWith("/") ? redirect : fallbackRoute;
         navigate(nextRoute);
       },

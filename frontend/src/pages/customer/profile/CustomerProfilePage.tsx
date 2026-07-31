@@ -1,11 +1,25 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { House, MapPinned, Pencil, Plus, Save, ShieldCheck, Star, Trash2, UserRound } from "lucide-react";
+import {
+  House,
+  LogOut,
+  MapPinned,
+  Pencil,
+  Plus,
+  Save,
+  ShieldCheck,
+  Star,
+  Trash2,
+  UserRound,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { useAuthLogoutMutation } from "../../../api/auth/authQuery";
 import { PageHeader } from "../../../components/layout/PageHeader";
 import { Badge, Button, FormInput } from "../../../components/ui";
 import { usePageTitle } from "../../../hooks/usePageTitle";
-import { useUser } from "../../../store/authStore";
+import { queryClient } from "../../../lib/queryClient";
+import { useAuthActions, useUser } from "../../../store/authStore";
 import {
   useCustomerDefaultAddress,
   useCustomerProfileActions,
@@ -17,7 +31,10 @@ import {
 } from "../../../store/customerProfileStore";
 import { useNotificationStore } from "../../../store/notifStore";
 import { CustomerAddressModal } from "./components/CustomerAddressModal";
-import { customerProfileSchema, type CustomerProfileSchemaType } from "./schema/CustomerProfileSchema";
+import {
+  customerProfileSchema,
+  type CustomerProfileSchemaType,
+} from "./schema/CustomerProfileSchema";
 import type { CustomerAddressSchemaType } from "./schema/CustomerAddressSchema";
 
 const paymentMethodOptions = [
@@ -35,8 +52,11 @@ const courierOptions = [
 export const CustomerProfilePage = () => {
   usePageTitle("Profile");
 
+  const navigate = useNavigate();
   const user = useUser();
+  const { logout } = useAuthActions();
   const { addToast } = useNotificationStore();
+  const { mutate: logoutMutation, isPending: isLogoutPending } = useAuthLogoutMutation();
   const addresses = useCustomerSavedAddresses();
   const defaultAddress = useCustomerDefaultAddress();
   const preferredPhone = useCustomerPreferredPhone();
@@ -61,11 +81,32 @@ export const CustomerProfilePage = () => {
     },
   });
 
-  const addressCountLabel = useMemo(() => `${addresses.length} saved address(es)`, [addresses.length]);
+  const addressCountLabel = useMemo(
+    () => `${addresses.length} saved address(es)`,
+    [addresses.length],
+  );
 
   const onSubmitPreferences = (values: CustomerProfileSchemaType) => {
     saveProfilePreferences(values);
     addToast("Customer profile preferences saved.", "success");
+  };
+
+  const onLogout = () => {
+    logoutMutation(undefined, {
+      onSuccess: (response) => {
+        if (response.message) {
+          addToast(response.message, "success");
+        }
+      },
+      onError: (error) => {
+        addToast(error.message, "error");
+      },
+      onSettled: () => {
+        queryClient.clear();
+        logout();
+        navigate("/login");
+      },
+    });
   };
 
   const onSubmitAddress = (values: CustomerAddressSchemaType) => {
@@ -78,10 +119,7 @@ export const CustomerProfilePage = () => {
       is_default: values.is_default === "1",
     });
 
-    addToast(
-      modalMode === "create" ? "Saved address added." : "Saved address updated.",
-      "success",
-    );
+    addToast(modalMode === "create" ? "Saved address added." : "Saved address updated.", "success");
     setEditingAddress(null);
     setModalMode(null);
   };
@@ -100,16 +138,32 @@ export const CustomerProfilePage = () => {
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <section className="space-y-6">
           <div className="rounded-3xl border border-primary-100 bg-gradient-to-br from-primary-50 via-white to-secondary-50 p-6">
-            <div className="flex items-start gap-3">
-              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-600 text-white">
-                <UserRound className="h-5 w-5" />
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+              <div className="flex items-start gap-3">
+                <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-600 text-white">
+                  <UserRound className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm uppercase tracking-[0.18em] text-primary-700">
+                    Account snapshot
+                  </p>
+                  <h2 className="mt-2 text-2xl font-semibold text-dark-900">
+                    {user?.full_name ?? "Customer"}
+                  </h2>
+                  <p className="mt-1 text-sm text-dark-500">{user?.email ?? "-"}</p>
+                  <p className="mt-1 text-sm text-dark-500">Username: {user?.username ?? "-"}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm uppercase tracking-[0.18em] text-primary-700">Account snapshot</p>
-                <h2 className="mt-2 text-2xl font-semibold text-dark-900">{user?.full_name ?? "Customer"}</h2>
-                <p className="mt-1 text-sm text-dark-500">{user?.email ?? "-"}</p>
-                <p className="mt-1 text-sm text-dark-500">Username: {user?.username ?? "-"}</p>
-              </div>
+
+              <Button
+                type="button"
+                variant="danger-outline"
+                icon={LogOut}
+                loading={isLogoutPending}
+                onClick={onLogout}
+              >
+                {isLogoutPending ? "Signing out..." : "Sign Out"}
+              </Button>
             </div>
           </div>
 
@@ -121,12 +175,16 @@ export const CustomerProfilePage = () => {
               <div>
                 <h2 className="text-lg font-semibold text-dark-900">Checkout preferences</h2>
                 <p className="mt-1 text-sm text-dark-500">
-                  These values are used as your default contact and delivery preference inside the cart page.
+                  These values are used as your default contact and delivery preference inside the
+                  cart page.
                 </p>
               </div>
             </div>
 
-            <form className="mt-5 grid gap-4 md:grid-cols-2" onSubmit={handleSubmit(onSubmitPreferences)}>
+            <form
+              className="mt-5 grid gap-4 md:grid-cols-2"
+              onSubmit={handleSubmit(onSubmitPreferences)}
+            >
               <FormInput
                 control={control}
                 name="preferred_phone"
@@ -173,7 +231,8 @@ export const CustomerProfilePage = () => {
               </div>
               {defaultAddress ? (
                 <p className="mt-4 text-sm text-dark-500">
-                  Default address: <span className="font-semibold text-dark-900">{defaultAddress.label}</span>
+                  Default address:{" "}
+                  <span className="font-semibold text-dark-900">{defaultAddress.label}</span>
                 </p>
               ) : (
                 <p className="mt-4 text-sm text-dark-500">
@@ -205,7 +264,10 @@ export const CustomerProfilePage = () => {
           ) : (
             <div className="grid gap-4">
               {addresses.map((address) => (
-                <article key={address.id} className="rounded-3xl border border-dark-200 bg-white p-5">
+                <article
+                  key={address.id}
+                  className="rounded-3xl border border-dark-200 bg-white p-5"
+                >
                   <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
@@ -217,7 +279,9 @@ export const CustomerProfilePage = () => {
                           </Badge>
                         ) : null}
                       </div>
-                      <p className="mt-2 text-sm font-medium text-dark-700">{address.recipient_name}</p>
+                      <p className="mt-2 text-sm font-medium text-dark-700">
+                        {address.recipient_name}
+                      </p>
                       <p className="mt-1 text-sm text-dark-500">{address.phone}</p>
                       <p className="mt-3 text-sm leading-7 text-dark-600">{address.address}</p>
                     </div>
@@ -243,9 +307,7 @@ export const CustomerProfilePage = () => {
                           setEditingAddress(address);
                           setModalMode("edit");
                         }}
-                      >
-                        Edit
-                      </Button>
+                      ></Button>
                       <Button
                         type="button"
                         variant="danger-outline"
@@ -254,9 +316,7 @@ export const CustomerProfilePage = () => {
                           removeAddress(address.id);
                           addToast("Saved address removed.", "success");
                         }}
-                      >
-                        Remove
-                      </Button>
+                      ></Button>
                     </div>
                   </div>
                 </article>

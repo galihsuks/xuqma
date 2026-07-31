@@ -38,7 +38,11 @@ interface NavGroup {
   items: NavItem[];
 }
 
-export const AppSidebar = () => {
+interface AppSidebarProps {
+  isCustomer?: boolean;
+}
+
+export const AppSidebar = ({ isCustomer }: AppSidebarProps) => {
   const user = useUser();
   const { logout } = useAuthActions();
   const { addToast } = useNotificationStore();
@@ -299,7 +303,10 @@ export const AppSidebar = () => {
     <>
       <aside
         className={cn(
-          "sticky top-[calc(var(--spacing)*6)] hidden md:flex flex-col rounded-3xl h-[calc(100svh-var(--spacing)*12)] border border-primary-100 bg-white p-4 shadow-[0_20px_50px_-35px_rgba(14,165,233,0.6)] transition-all duration-300",
+          "sticky hidden md:flex flex-col rounded-3xl border border-primary-100 bg-white p-4 shadow-[0_20px_50px_-35px_rgba(14,165,233,0.6)] transition-all duration-300",
+          isCustomer
+            ? "top-[calc(var(--spacing)*6+65px)] h-[calc(100svh-var(--spacing)*12-65px)]"
+            : "top-[calc(var(--spacing)*6)] h-[calc(100svh-var(--spacing)*12)]",
           collapseDesktopSidebar ? "md:w-[80px]" : "md:w-[280px]",
         )}
       >

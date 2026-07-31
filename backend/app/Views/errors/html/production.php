@@ -2,7 +2,7 @@
 $pageTitle = '500 - Internal Server Error';
 $statusCode = '500';
 $badgeClass = 'badge-danger';
-$iconBackground = '#e11d48';
+$iconBackground = '#f43f5e';
 $iconSvg = <<<SVG
 <svg viewBox="0 0 24 24" aria-hidden="true">
     <path d="M12 8v4"></path>
@@ -11,15 +11,16 @@ $iconSvg = <<<SVG
 </svg>
 SVG;
 $title = 'Internal Server Error';
-$description = 'Something went wrong while loading this page. Please try again in a moment.';
-$heroTitle = 'Public pages can still fail gracefully.';
-$heroDescription = 'Even when the server hits an unexpected problem, the website should remain calm, readable, and aligned with the project theme.';
+$description = 'Something went wrong on the server while processing your request. Please try again in a moment.';
+$heroTitle = 'The latest software and hardware are here';
+$heroDescription = 'SEO storefront pages can stay on CodeIgniter, while transactional customer and admin experiences live under React.';
 $primaryActionLabel = 'Try Home';
 $primaryActionUrl = base_url('/');
 $secondaryActionLabel = 'Open About Page';
 $secondaryActionUrl = base_url('/about');
 $hintTitle = 'Helpful note';
-$hintCopy = 'If this issue continues, review the server logs and check the controller, route, or related view that was being loaded.';
-$brandText = getenv('app.name') ?: 'Base App Galih';
+$hintCopy = 'If this issue continues, review the server logs and check the controller, route, or related view that was being processed.';
+$brandText = 'UQMA';
+$contextLabel = 'Public Website';
 
 include __DIR__ . DIRECTORY_SEPARATOR . '_themed_error.php';

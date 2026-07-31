@@ -20,7 +20,7 @@ const NotFound = ({ onReset, showHomeLink = true }: NotFoundProps) => {
       onReset={onReset}
       resetLabel="Go Back"
       showDashboardLink={showHomeLink}
-      dashboardLabel="Go to Dashboard"
+      dashboardLabel="Go Back"
     />
   );
 };

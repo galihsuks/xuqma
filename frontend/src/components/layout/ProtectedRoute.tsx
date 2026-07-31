@@ -8,11 +8,24 @@ import { useAccessControlActions } from "../../store/accessControlStore";
 import { useHttpErrorActions } from "../../store/httpErrorStore";
 import { findMenuByPath } from "../../utils/accessControl";
 
+const getRoleHomeRoute = (roleCode?: string | null) => {
+  if (roleCode === "C") {
+    return "/customer/cart";
+  }
+
+  return "/admin/dashboard";
+};
+
 export const PrivateRoute = () => {
   const isAuth = useAuthStore((state) => state.isAuthenticated);
+  const roleCode = useAuthStore((state) => state.user?.role?.code ?? null);
   const location = useLocation();
   const { clearAccessContext, setAccessContext } = useAccessControlActions();
   const { clearError } = useHttpErrorActions();
+  const isCustomerOnly = roleCode === "C";
+  const isAdminOnly = roleCode === "A" || roleCode === "SA";
+  const isCustomerRoute = location.pathname.startsWith("/customer");
+  const isAdminRoute = location.pathname.startsWith("/admin");
   const {
     data: accessMenuData,
     isPending: isAccessMenuPending,
@@ -53,6 +66,14 @@ export const PrivateRoute = () => {
     return <Navigate to={`/login?redirect=${encodeURIComponent(redirect)}`} replace />;
   }
 
+  if (isCustomerOnly && isAdminRoute) {
+    return <Navigate to="/customer/cart" replace />;
+  }
+
+  if (isAdminOnly && isCustomerRoute) {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
+
   if (accessMenuError || accessControlError) {
     return <InternalServerError />;
   }
@@ -71,12 +92,18 @@ export const PrivateRoute = () => {
 
 export const GuestRoute = () => {
   const isAuth = useAuthStore((state) => state.isAuthenticated);
+  const roleCode = useAuthStore((state) => state.user?.role?.code ?? null);
   const location = useLocation();
 
   if (isAuth) {
     const redirect = new URLSearchParams(location.search).get("redirect");
-    const fallback = "/admin/dashboard";
-    const nextRoute = redirect && redirect.startsWith("/") ? redirect : fallback;
+    const fallback = getRoleHomeRoute(roleCode);
+    const nextRoute =
+      redirect &&
+      redirect.startsWith("/") &&
+      !((roleCode === "C" && redirect.startsWith("/admin")) || ((roleCode === "A" || roleCode === "SA") && redirect.startsWith("/customer")))
+        ? redirect
+        : fallback;
     return <Navigate to={nextRoute} replace />;
   }
 

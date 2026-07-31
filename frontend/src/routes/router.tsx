@@ -69,7 +69,6 @@ export const appRouter = createBrowserRouter([
           },
         ],
       },
-      { path: "/", element: <Navigate to="/customer/cart" replace /> },
       { path: "*", element: <NotFound /> },
     ],
   },

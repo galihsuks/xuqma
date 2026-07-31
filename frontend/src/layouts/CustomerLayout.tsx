@@ -1,12 +1,9 @@
 import { Package, ReceiptText, ShoppingCart, UserRound } from "lucide-react";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { AppLogo } from "../components/shared/AppLogo";
 import { usePageTitle } from "../hooks/usePageTitle";
-import { queryClient } from "../lib/queryClient";
-import { useAuthLogoutMutation } from "../api/auth/authQuery";
-import { useAuthActions, useUser } from "../store/authStore";
-import { useNotificationStore } from "../store/notifStore";
 import { cn } from "../utils/cn";
+import { AppSidebar } from "../components/layout/AppSidebar";
 
 const customerNavItems = [
   { label: "Cart", path: "/customer/cart", icon: ShoppingCart },
@@ -24,29 +21,6 @@ export const CustomerLayout = () => {
   usePageTitle("Customer Workspace");
 
   const location = useLocation();
-  const navigate = useNavigate();
-  const user = useUser();
-  const { logout } = useAuthActions();
-  const addToast = useNotificationStore((state) => state.addToast);
-  const { mutate: logoutMutation, isPending: isLogoutPending } = useAuthLogoutMutation();
-
-  const onLogout = () => {
-    logoutMutation(undefined, {
-      onSuccess: (response) => {
-        if (response.message) {
-          addToast(response.message, "success");
-        }
-      },
-      onError: (error) => {
-        addToast(error.message, "error");
-      },
-      onSettled: () => {
-        queryClient.clear();
-        logout();
-        navigate("/login");
-      },
-    });
-  };
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(244,114,182,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(167,139,250,0.22),transparent_24%),linear-gradient(180deg,var(--color-light-100),white)]">
@@ -112,8 +86,11 @@ export const CustomerLayout = () => {
           </div>
         </div>
       </header>
-      <div className="mx-auto max-w-7xl px-4 py-6 md:px-6 md:py-8">
-        <section className="mt-6 rounded-[30px] border border-primary-100 bg-white p-6 shadow-[0_24px_70px_-50px_rgba(167,139,250,0.5)] md:p-8">
+
+      <div className="mx-auto flex max-w-[1400px] gap-0 md:gap-4 px-4 py-6 md:px-6 md:py-6">
+        <AppSidebar isCustomer={true} />
+
+        <section className="rounded-[30px] border border-primary-100 bg-white p-6 shadow-[0_24px_70px_-50px_rgba(167,139,250,0.5)] md:p-8 flex-1">
           <Outlet />
         </section>
       </div>

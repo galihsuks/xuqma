@@ -56,36 +56,34 @@ export const ErrorState = ({
   footer,
 }: ErrorStateProps) => {
   const toneClass = toneClassMap[tone];
+  const isAdminRoute = location.pathname.startsWith("/customer") ? false : true;
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-light-100 px-4 py-8 sm:px-6 lg:px-8">
       <div
-        className={cn(
-          "pointer-events-none absolute inset-0 bg-gradient-to-br",
-          toneClass.glow,
-        )}
+        className={cn("pointer-events-none absolute inset-0 bg-gradient-to-br", toneClass.glow)}
       />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-[radial-gradient(circle_at_top,_rgba(14,165,233,0.16),_transparent_60%)]" />
 
       <div className="relative mx-auto flex min-h-[calc(100svh-4rem)] max-w-6xl items-center justify-center">
         <section className="grid w-full overflow-hidden rounded-[32px] border border-primary-100/60 bg-white/88 shadow-[0_30px_80px_-45px_rgba(14,165,233,0.55)] backdrop-blur-xl lg:grid-cols-[0.92fr_1.08fr]">
-          <div className="relative hidden overflow-hidden bg-gradient-to-br from-primary-600 via-primary-500 to-secondary-400 p-8 text-white lg:flex lg:min-h-[620px] lg:flex-col lg:justify-between">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(255,255,255,0.35),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(255,255,255,0.18),_transparent_30%)]" />
-
-            <div className="relative">
-              <div className="inline-flex rounded-2xl bg-white/14 p-3 ring-1 ring-white/20 backdrop-blur-sm">
-                <AppLogo variant="mark-white" className="h-10 w-10" />
+          <div className="relative hidden overflow-hidden bg-gradient-to-br from-primary-950 via-primary-900 to-secondary-400 p-12 text-white lg:flex lg:flex-col lg:justify-between">
+            <div className="relative mb-10">
+              <div>
+                <div className="inline-flex h-12 w-12 items-center justify-center">
+                  <AppLogo variant="icon" className="h-10 w-10" />
+                </div>
+                <p className="text-sm uppercase tracking-[0.22em] text-white/80">XUQMA</p>
               </div>
-              <p className="mt-8 text-xs font-semibold uppercase tracking-[0.26em] text-white/75">
-                Base App
-              </p>
-              <h2 className="mt-4 max-w-sm text-4xl font-bold leading-tight">
-                Elegant fallback pages for every important state.
-              </h2>
-              <p className="mt-4 max-w-md text-sm leading-7 text-white/82">
-                The interface stays calm, branded, and predictable even when the request fails,
-                the route is missing, or the user does not have permission.
-              </p>
+              <div>
+                <h2 className="mt-4 text-4xl font-semibold leading-tight max-w-[350px]">
+                  The latest software and hardware are here
+                </h2>
+                <p className="mt-4 max-w-sm text-sm text-white/85">
+                  SEO storefront pages can stay on CodeIgniter, while transactional customer and
+                  admin experiences live under React.
+                </p>
+              </div>
             </div>
 
             <div className="relative rounded-[28px] border border-white/18 bg-white/10 p-5 backdrop-blur-sm">
@@ -105,25 +103,36 @@ export const ErrorState = ({
             <div className="mx-auto flex max-w-xl flex-col justify-center">
               <div className="mb-8 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className={cn("inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em]", toneClass.badge)}>
+                  <div
+                    className={cn(
+                      "inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em]",
+                      toneClass.badge,
+                    )}
+                  >
                     {code}
                   </div>
                   <div className="inline-flex items-center gap-2 rounded-full border border-light-200 bg-white px-3 py-1 text-xs font-medium text-dark-500">
                     <span className="h-2 w-2 rounded-full bg-secondary-400" />
-                    Admin Panel
+                    {isAdminRoute ? "Admin" : "Public"} Panel
                   </div>
                 </div>
-                <AppLogo variant="landscape-black" className="hidden h-7 sm:block" />
+                <AppLogo variant="landscape" className="hidden sm:block lg:hidden h-7" />
+                <AppLogo variant="icon" className="block sm:hidden h-7" />
               </div>
 
-              <div className={cn("inline-flex h-16 w-16 items-center justify-center rounded-[22px] shadow-lg shadow-dark-900/8", toneClass.iconWrap)}>
+              <div
+                className={cn(
+                  "inline-flex h-16 w-16 items-center justify-center rounded-[22px] shadow-lg shadow-dark-900/8",
+                  toneClass.iconWrap,
+                )}
+              >
                 <Icon className="h-8 w-8" />
               </div>
 
               <h1 className="mt-6 text-4xl font-bold tracking-tight text-dark-900 sm:text-5xl">
                 {title}
               </h1>
-              <p className="mt-4 max-w-lg text-base leading-8 text-dark-500 sm:text-lg">
+              <p className="mt-4 max-w-lg text-base md:leading-8 text-dark-500 sm:text-lg">
                 {description}
               </p>
 
@@ -135,7 +144,7 @@ export const ErrorState = ({
                 ) : null}
                 {showDashboardLink ? (
                   <a
-                    href="/dashboard"
+                    href={isAdminRoute ? "/admin/dashboard" : "/customer/cart"}
                     className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary-500 px-4 py-2.5 text-sm font-semibold text-primary-700 transition text-nowrap hover:bg-primary-50"
                   >
                     <Home className="h-4 w-4" />
