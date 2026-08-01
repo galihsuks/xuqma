@@ -1,46 +1,97 @@
 <?= $this->extend('web/layouts/app') ?>
 
 <?= $this->section('content') ?>
-<section class="mx-auto grid max-w-7xl gap-10 px-5 py-16 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-24">
-    <div class="rounded-[32px] border border-white/70 bg-white/85 p-8 shadow-glow backdrop-blur-xl lg:p-10">
-        <span class="inline-flex items-center gap-2 rounded-full bg-secondary-100 px-4 py-2 text-sm font-semibold uppercase tracking-[0.22em] text-secondary-800">
-            <i class="bi bi-stars"></i>
-            <?= esc($heroBadge ?? 'Public Website') ?>
-        </span>
-        <h1 class="mt-6 max-w-3xl text-4xl font-extrabold tracking-tight text-dark-900 lg:text-6xl">
-            <?= esc($pageTitle) ?>
-        </h1>
-        <p class="mt-5 max-w-2xl text-lg leading-8 text-dark-600">
-            <?= esc($pageSubtitle) ?>
-        </p>
+<section class="">
+    <div class="relative overflow-hidden bg-dark-900 shadow-[0_40px_120px_-45px_rgba(124,58,237,0.55)]">
+        <div class="absolute inset-0">
+            <img
+                src="<?= base_url('/assets/hero-img.png') ?>"
+                alt="Featured IT accessories and computer components"
+                class="h-full w-full object-cover object-center"
+            >
+        </div>
 
-        <div class="mt-8 flex flex-wrap gap-3">
-            <a href="<?= base_url('/shop') ?>" class="inline-flex items-center gap-2 rounded-2xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-200/70 transition hover:bg-primary-500">
-                <i class="bi bi-bag-check"></i>
-                Explore catalog
-            </a>
-            <a href="<?= base_url('/app/login') ?>" class="inline-flex items-center gap-2 rounded-2xl border border-dark-200 bg-white px-6 py-3 text-sm font-semibold text-dark-700 transition hover:border-primary-200 hover:text-primary-700">
-                <i class="bi bi-box-arrow-in-right"></i>
-                Open customer or admin app
-            </a>
+        <div class="relative mx-auto max-w-7xl grid py-10 lg:py-[140px] px-5 lg:px-8 lg:grid-cols-[1.05fr_0.95fr]">
+            <div class="max-w-3xl">
+                <span class="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.22em] text-secondary-100 backdrop-blur">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                    <?= esc($heroBadge ?? 'Trusted IT Commerce') ?>
+                </span>
+
+                <h1 class="mt-6 max-w-3xl text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+                    Shopping is
+                    <span class="bg-gradient-to-r from-white via-secondary-100 to-primary-200 bg-clip-text text-transparent">
+                        more focused,
+                    </span>
+                    not more complicated.
+                </h1>
+
+                <p class="mt-5 max-w-2xl text-base leading-8 text-slate-200 sm:text-lg">
+                    XUQMA brings together headphones, phone accessories, monitors, RAM, GPUs, and everyday tech gear
+                    in one storefront with clear product highlights, helpful buying guides, and a fast checkout flow.
+                </p>
+
+                <div class="mt-8 flex flex-wrap gap-3">
+                    <a href="<?= base_url('/shop') ?>" class="inline-flex items-center gap-2 rounded-2xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-900/30 transition hover:bg-primary-500">
+                        <i class="bi bi-bag-check"></i>
+                        Shop now
+                    </a>
+                    <a href="<?= base_url('/articles') ?>" class="inline-flex items-center gap-2 rounded-2xl border border-white/14 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15">
+                        <i class="bi bi-journal-richtext"></i>
+                        Read buying guides
+                    </a>
+                </div>
+
+                <div class="mt-8 grid gap-3 sm:grid-cols-3">
+                    <article class="rounded-[24px] border border-white/10 bg-white/10 p-4 backdrop-blur">
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-secondary-100">Fast discovery</p>
+                        <p class="mt-3 text-2xl font-bold text-white">100+</p>
+                        <p class="mt-2 text-sm leading-6 text-slate-200">Products ready to compare</p>
+                    </article>
+                    <article class="rounded-[24px] border border-white/10 bg-white/10 p-4 backdrop-blur">
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-secondary-100">For every setup</p>
+                        <p class="mt-3 text-2xl font-bold text-white">Multi</p>
+                        <p class="mt-2 text-sm leading-6 text-slate-200">Categories for work, gaming, and upgrades</p>
+                    </article>
+                    <article class="rounded-[24px] border border-white/10 bg-white/10 p-4 backdrop-blur">
+                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-secondary-100">Action ready</p>
+                        <p class="mt-3 text-2xl font-bold text-white">/app</p>
+                        <p class="mt-2 text-sm leading-6 text-slate-200">Customer flow ready for checkout</p>
+                    </article>
+                </div>
+            </div>
         </div>
     </div>
+</section>
 
-    <div class="grid gap-4">
-        <?php foreach (($stats ?? []) as $stat): ?>
-            <article class="rounded-[28px] border border-white/70 bg-gradient-to-br from-white to-primary-50 p-6 shadow-lg shadow-primary-100/50">
-                <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary-700"><?= esc($stat['label']) ?></p>
-                <p class="mt-3 text-2xl font-bold text-dark-900"><?= esc($stat['value']) ?></p>
-            </article>
-        <?php endforeach; ?>
-
-        <article class="rounded-[28px] border border-primary-100 bg-dark-900 p-6 text-white shadow-2xl">
-            <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary-300">Suggested flow</p>
-            <ol class="mt-4 space-y-3 text-sm leading-7 text-slate-100">
-                <li>1. Let search engines discover product and article pages rendered by CodeIgniter.</li>
-                <li>2. Move transactional flows into React under <span class="font-semibold text-white">/app/customer</span>.</li>
-                <li>3. Keep operations and management inside <span class="font-semibold text-white">/app/admin</span>.</li>
-            </ol>
+<section class="mx-auto max-w-7xl py-10 lg:py-14 px-5 lg:px-8">
+    <div class="grid gap-5 md:grid-cols-3">
+        <article class="rounded-[28px] border border-white/70 bg-white/90 p-6 shadow-lg shadow-primary-100/35">
+            <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
+                <i class="bi bi-search text-xl"></i>
+            </div>
+            <h2 class="mt-5 text-xl font-bold text-dark-900">Find the right products faster</h2>
+            <p class="mt-3 text-sm leading-7 text-dark-600">
+                Browse popular categories, scan key highlights, and get to the products that match your setup without wasting time.
+            </p>
+        </article>
+        <article class="rounded-[28px] border border-white/70 bg-white/90 p-6 shadow-lg shadow-primary-100/35">
+            <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-secondary-50 text-secondary-600">
+                <i class="bi bi-journal-check text-xl"></i>
+            </div>
+            <h2 class="mt-5 text-xl font-bold text-dark-900">Research while you shop</h2>
+            <p class="mt-3 text-sm leading-7 text-dark-600">
+                Read practical buying guides, understand the specs that matter, and shop with more confidence from the start.
+            </p>
+        </article>
+        <article class="rounded-[28px] border border-white/70 bg-white/90 p-6 shadow-lg shadow-primary-100/35">
+            <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
+                <i class="bi bi-lightning-charge text-xl"></i>
+            </div>
+            <h2 class="mt-5 text-xl font-bold text-dark-900">Enjoy a smoother buying journey</h2>
+            <p class="mt-3 text-sm leading-7 text-dark-600">
+                Save your details, keep delivery preferences ready, and reorder faster whenever you come back for your next upgrade.
+            </p>
         </article>
     </div>
 </section>
@@ -49,7 +100,10 @@
     <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div class="max-w-2xl">
             <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary-700">Shop by category</p>
-            <h2 class="mt-3 text-3xl font-bold tracking-tight text-dark-900">Curated sections for modern IT needs</h2>
+            <h2 class="mt-3 text-3xl font-bold tracking-tight text-dark-900">Choose the category that fits your setup best</h2>
+            <p class="mt-3 text-base leading-8 text-dark-600">
+                Explore the gear people shop for most, from daily phone essentials to serious desktop upgrades and performance-focused components.
+            </p>
         </div>
         <a href="<?= base_url('/shop') ?>" class="inline-flex items-center gap-2 text-sm font-semibold text-primary-700 hover:text-primary-600">
             View all products
@@ -89,7 +143,10 @@
     <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div class="max-w-2xl">
             <p class="text-sm font-semibold uppercase tracking-[0.22em] text-secondary-700">Featured picks</p>
-            <h2 class="mt-3 text-3xl font-bold tracking-tight text-dark-900">Popular products for gamers, creators, and everyday setups</h2>
+            <h2 class="mt-3 text-3xl font-bold tracking-tight text-dark-900">Featured picks for gaming, work, streaming, and daily upgrades</h2>
+            <p class="mt-3 text-base leading-8 text-dark-600">
+                Discover standout products that are worth a closer look, whether you are shopping for better comfort, cleaner audio, or more power.
+            </p>
         </div>
         <a href="<?= base_url('/shop') ?>" class="inline-flex items-center gap-2 text-sm font-semibold text-primary-700 hover:text-primary-600">
             Browse storefront
@@ -145,7 +202,10 @@
     <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div class="max-w-2xl">
             <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary-700">Content that converts</p>
-            <h2 class="mt-3 text-3xl font-bold tracking-tight text-dark-900">Support search traffic with educational IT articles</h2>
+            <h2 class="mt-3 text-3xl font-bold tracking-tight text-dark-900">Helpful articles for smarter tech buying decisions</h2>
+            <p class="mt-3 text-base leading-8 text-dark-600">
+                Read practical guides, comparisons, and upgrade tips that make it easier to choose the right product before you spend.
+            </p>
         </div>
         <a href="<?= base_url('/articles') ?>" class="inline-flex items-center gap-2 text-sm font-semibold text-primary-700 hover:text-primary-600">
             Read all articles

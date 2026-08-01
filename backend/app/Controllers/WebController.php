@@ -18,17 +18,11 @@ class WebController extends BaseController
             'categories' => array_slice($categories, 0, 4),
             'description' => 'IT commerce storefront for accessories, headphones, monitors, VGA, RAM, and other computer components with SEO-friendly public pages.',
             'featuredProducts' => $featuredProducts !== [] ? $featuredProducts : array_slice($products, 0, 4),
-            'heroBadge' => 'IT Commerce Storefront',
             'metaType' => 'website',
             'latestArticles' => array_slice($articles, 0, 3),
             'pageTitle' => 'Build your setup with curated IT gear, accessories, and upgrade-ready components',
             'pageSubtitle' => 'Use CodeIgniter for SEO-focused storefront pages, and hand off cart, order, and admin workflows to React under /app.',
             'seoTitle' => 'Xuqma | IT accessories, components, and setup gear',
-            'stats' => [
-                ['label' => 'Top categories', 'value' => 'Phone, audio, PC, display'],
-                ['label' => 'Operational split', 'value' => 'Storefront + React app'],
-                ['label' => 'Launch path', 'value' => '/app/customer and /app/admin'],
-            ],
         ]));
     }
 
