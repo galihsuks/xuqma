@@ -198,9 +198,14 @@
                         <?php foreach ($navItems as $item): ?>
                             <a
                                 href="<?= esc($item['href']) ?>"
-                                class="<?= $item['display']; ?> rounded-full px-3 py-3 text-sm font-semibold text-dark-600 transition hover:bg-primary-50 hover:text-primary-700"
+                                class="<?= $item['display']; ?> relative rounded-full px-3 py-3 text-sm font-semibold text-dark-600 transition hover:bg-primary-50 hover:text-primary-700"
                             >
                                 <i class="block -translate-y-[3px] translate-x-[2px] h-4 w-4 bi <?= $item['icon']; ?>"></i>
+                                <?php if ($item['icon'] === 'bi-bag'): ?>
+                                    <span class="absolute right-0.5 top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-secondary-500 px-1 text-[10px] font-bold leading-none text-white">
+                                        3
+                                    </span>
+                                <?php endif; ?>
                             </a>
                         <?php endforeach; ?>
                         <span class="hidden md:block w-[1px] h-[80%] bg-dark-200"></span>
@@ -220,7 +225,7 @@
         </main>
 
         <nav class="fixed inset-x-0 bottom-0 z-40 px-4 pb-4 pt-3 md:hidden">
-            <div class="mx-auto grid max-w-lg grid-cols-5 items-end rounded-[32px] border border-white/70 bg-white/90 p-1 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.35)] backdrop-blur-xl">
+            <div class="mx-auto grid max-w-lg grid-cols-5 items-end rounded-full border border-white/70 bg-white/90 p-1 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.35)] backdrop-blur-xl">
                 <?php $mobileNavItems = [
                     [
                         'label' => 'Cart',
@@ -268,11 +273,16 @@
                         <a
                             href="<?= esc($item['href']) ?>"
                             class="<?= $item['active']
-                                ? 'flex flex-col items-center justify-center rounded-2xl px-2 py-2 text-primary-700'
-                                : 'flex flex-col items-center justify-center rounded-2xl px-2 py-2 text-dark-500 transition hover:text-primary-700' ?>"
+                                ? 'relative flex flex-col items-center justify-center rounded-2xl px-2 py-2 text-primary-700'
+                                : 'relative flex flex-col items-center justify-center rounded-2xl px-2 py-2 text-dark-500 transition hover:text-primary-700' ?>"
                         >
                             <i class="bi <?= esc($item['icon']) ?> text-base"></i>
                             <span class="text-[9px] font-semibold"><?= esc($item['label']) ?></span>
+                            <?php if ($item['icon'] === 'bi-bag'): ?>
+                                <span class="absolute right-2.5 top-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-secondary-500 px-1 text-[10px] font-bold leading-none text-white">
+                                    3
+                                </span>
+                            <?php endif; ?>
                         </a>
                     <?php endif; ?>
                 <?php endforeach; ?>
