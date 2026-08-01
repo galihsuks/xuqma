@@ -7,7 +7,7 @@ import {
   LogOut,
   X,
   type LucideIcon,
-  PanelRightClose,
+  EllipsisVertical,
 } from "lucide-react";
 import { useAccessMenuQuery } from "../../api/access/accessQuery";
 import { useAuthLogoutMutation } from "../../api/auth/authQuery";
@@ -313,23 +313,22 @@ export const AppSidebar = ({ isCustomer }: AppSidebarProps) => {
         {renderSidebarContent(collapseDesktopSidebar)}
       </aside>
 
-      <div className="fixed left-0 px-4 top-0 z-30 md:hidden h-19 w-full flex items-center justify-between bg-light-100">
-        <div className="flex-1 flex items-center overflow-hidden gap-3">
-          <div className="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-xl">
-            <AppLogo variant="mark" className="h-7 w-10" />
+      <div className="fixed left-0 px-4 top-0 z-30 md:hidden h-[65px] w-full bg-white/80 backdrop-blur-xl">
+        <div className="relative h-full w-full relative flex items-center justify-center">
+          <a href="/" className="flex items-center gap-1">
+            <div className="flex h-7 w-7 items-center justify-center rounded-2xl text-xl font-extrabold text-white shadow-glow">
+              <AppLogo variant="icon" className="h-7 w-auto" />
+            </div>
+            <div>
+              <p className="text-lg font-light text-primary-700 tracking-[0.28em]">UQMA</p>
+            </div>
+          </a>
+          <div
+            onClick={() => setOpenMobileSidebar(true)}
+            className="right-0 absolute items-center justify-center rounded-2xl text-dark-800"
+          >
+            <EllipsisVertical className="h-5 w-5" />
           </div>
-          <div className="min-w-0 overflow-hidden max-w-56 opacity-100">
-            <p className="truncate text-[9px] tracking-[0.2em] text-dark-500 mb-[-5px]">
-              ECOMMERCE
-            </p>
-            <AppLogo variant="text" className="truncate" />
-          </div>
-        </div>
-        <div
-          onClick={() => setOpenMobileSidebar(true)}
-          className="inline-flex w-12 items-center justify-center rounded-2xl text-dark-800"
-        >
-          <PanelRightClose className="h-5 w-5" />
         </div>
       </div>
 

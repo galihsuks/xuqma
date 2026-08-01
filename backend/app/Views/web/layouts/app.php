@@ -151,15 +151,20 @@
     </style>
 </head>
 <body class="text-dark-900 bg-[radial-gradient(circle_at_top_left,rgba(244,114,182,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(167,139,250,0.22),transparent_24%),linear-gradient(180deg,var(--color-light-100),white)]">
-    <div class="min-h-screen">
-        <header class="sticky top-0 z-30 border-b border-white/70 bg-white/80 backdrop-blur-xl">
-            <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 lg:px-8">
+    <div class="min-h-screen pb-24 md:pb-0">
+        <header class="sticky top-0 z-30 border-b border-white/70 bg-white/80 backdrop-blur-xl h-[65px] md:h-auto">
+            <div class="relative mx-auto flex max-w-7xl items-center justify-between px-5 py-3 lg:px-8 h-full">
                 <div class="flex-1">
-                    <nav class="hidden items-center gap-2 md:flex">
+                    <div
+                        class="block md:hidden items-center justify-center rounded-2xl text-dark-800"
+                    >
+                        <i class="block -translate-y-[3px] translate-x-[2px] h-4 w-4 bi bi-three-dots-vertical"></i>
+                    </div>
+                    <nav class="hidden md:flex items-center gap-2">
                         <?php $navItems = [
-                            ['label' => 'Home', 'href' => base_url('/'), 'key' => 'home'],
                             ['label' => 'Shop', 'href' => base_url('/shop'), 'key' => 'shop'],
                             ['label' => 'Articles', 'href' => base_url('/articles'), 'key' => 'articles'],
+                            ['label' => 'About', 'href' => base_url('/about'), 'key' => 'about'],
                         ]; ?>
                         <?php foreach ($navItems as $item): ?>
                             <?php $isActive = ($activeNav ?? '') === $item['key']; ?>
@@ -174,7 +179,7 @@
                         <?php endforeach; ?>
                     </nav>
                 </div>
-                <a href="<?= base_url('/') ?>" class="flex items-center gap-1">
+                <a href="<?= base_url('/') ?>" class="flex items-center justify-center gap-1">
                     <div class="flex h-7 w-7 items-center justify-center rounded-2xl text-xl font-extrabold text-white shadow-glow">
                         <img src="/assets/app_logo/mark.png" alt="">
                     </div>
@@ -183,25 +188,25 @@
                     </div>
                 </a>
 
-                <div class="flex-1 flex flex justify-end">
+                <div class="flex-1 flex justify-end">
                     <div class="flex flex-wrap items-center gap-2">
                         <?php $navItems = [
-                            ['icon' => 'bi-cart2', 'href' => base_url('/app/customer/cart')],
-                            ['icon' => 'bi-box-seam', 'href' => base_url('/app/customer/orders')],
-                            ['icon' => 'bi-receipt', 'href' => base_url('/app/customer/history')],
+                            ['display' => 'block', 'icon' => 'bi-bag', 'href' => base_url('/app/customer/cart')],
+                            ['display' => 'hidden md:block', 'icon' => 'bi-box-seam', 'href' => base_url('/app/customer/orders')],
+                            ['display' => 'hidden md:block', 'icon' => 'bi-receipt', 'href' => base_url('/app/customer/history')],
                         ]; ?>
                         <?php foreach ($navItems as $item): ?>
                             <a
                                 href="<?= esc($item['href']) ?>"
-                                class="rounded-full px-3 py-3 text-sm font-semibold text-dark-600 transition hover:bg-primary-50 hover:text-primary-700"
+                                class="<?= $item['display']; ?> rounded-full px-3 py-3 text-sm font-semibold text-dark-600 transition hover:bg-primary-50 hover:text-primary-700"
                             >
                                 <i class="block -translate-y-[3px] translate-x-[2px] h-4 w-4 bi <?= $item['icon']; ?>"></i>
                             </a>
                         <?php endforeach; ?>
-                        <span class="w-[1px] h-[80%] bg-dark-200"></span>
+                        <span class="hidden md:block w-[1px] h-[80%] bg-dark-200"></span>
                         <a
                             href="<?= base_url('/app/customer/profile'); ?>"
-                            class="rounded-full px-3 py-3 text-sm font-semibold text-dark-600 transition hover:bg-primary-50 hover:text-primary-700"
+                            class="hidden md:block rounded-full px-3 py-3 text-sm font-semibold text-dark-600 transition hover:bg-primary-50 hover:text-primary-700"
                         >
                             <i class="block -translate-y-[3px] translate-x-[2px] h-4 w-4 bi bi-person"></i>
                         </a>
@@ -213,6 +218,66 @@
         <main>
             <?= $this->renderSection('content') ?>
         </main>
+
+        <nav class="fixed inset-x-0 bottom-0 z-40 px-4 pb-4 pt-3 md:hidden">
+            <div class="mx-auto grid max-w-lg grid-cols-5 items-end rounded-[32px] border border-white/70 bg-white/90 p-1 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.35)] backdrop-blur-xl">
+                <?php $mobileNavItems = [
+                    [
+                        'label' => 'Cart',
+                        'icon' => 'bi-bag',
+                        'href' => base_url('/app/customer/cart'),
+                        'active' => str_starts_with((string) ($currentPath ?? ''), '/app/customer/cart'),
+                    ],
+                    [
+                        'label' => 'Orders',
+                        'icon' => 'bi-box-seam',
+                        'href' => base_url('/app/customer/orders'),
+                        'active' => str_starts_with((string) ($currentPath ?? ''), '/app/customer/orders'),
+                    ],
+                    [
+                        'label' => 'Products',
+                        'href' => base_url('/shop'),
+                        'active' => ($activeNav ?? '') === 'shop',
+                        'featured' => true,
+                    ],
+                    [
+                        'label' => 'History',
+                        'icon' => 'bi-receipt',
+                        'href' => base_url('/app/customer/history'),
+                        'active' => str_starts_with((string) ($currentPath ?? ''), '/app/customer/history'),
+                    ],
+                    [
+                        'label' => 'Profile',
+                        'icon' => 'bi-person',
+                        'href' => base_url('/app/customer/profile'),
+                        'active' => str_starts_with((string) ($currentPath ?? ''), '/app/customer/profile'),
+                    ],
+                ]; ?>
+
+                <?php foreach ($mobileNavItems as $item): ?>
+                    <?php if (($item['featured'] ?? false) === true): ?>
+                        <a
+                            href="<?= esc($item['href']) ?>"
+                            class="flex items-center justify-center h-1"
+                        >
+                            <span class="flex h-14 w-14 -translate-y-9 items-center justify-center rounded-full bg-gradient-to-br from-primary-600 via-primary-500 to-secondary-400 shadow-[0_18px_34px_-16px_rgba(124,58,237,0.75)] ring-4 ring-white/90">
+                                <img src="/assets/app_logo/mark.png" alt="" class="h-8 w-8 object-contain brightness-0 invert">
+                            </span>
+                        </a>
+                    <?php else: ?>
+                        <a
+                            href="<?= esc($item['href']) ?>"
+                            class="<?= $item['active']
+                                ? 'flex flex-col items-center justify-center rounded-2xl px-2 py-2 text-primary-700'
+                                : 'flex flex-col items-center justify-center rounded-2xl px-2 py-2 text-dark-500 transition hover:text-primary-700' ?>"
+                        >
+                            <i class="bi <?= esc($item['icon']) ?> text-base"></i>
+                            <span class="text-[9px] font-semibold"><?= esc($item['label']) ?></span>
+                        </a>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            </div>
+        </nav>
 
         <footer class="mt-16 border-t border-white/70 bg-primary-50/75 backdrop-blur-xl">
             <div class="mx-auto max-w-7xl px-5 lg:px-8 pt-10">

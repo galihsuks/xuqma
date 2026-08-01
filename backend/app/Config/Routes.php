@@ -45,6 +45,7 @@ $routes->options('(:any)', function () {
 // Public Routes (no auth needed)
 // ─────────────────────────────────────────────────────────────────────────────
 $routes->get('/', 'WebController::home');
+$routes->get('about', 'WebController::about');
 $routes->get('shop', 'WebController::shop');
 $routes->get('category/(:segment)', 'WebController::category/$1');
 $routes->get('products/(:segment)', 'WebController::productDetail/$1');

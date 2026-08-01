@@ -76,26 +76,7 @@
 
             <div class="mt-8 grid gap-6 lg:grid-cols-3">
                 <?php foreach ($relatedProducts as $relatedProduct): ?>
-                    <article class="rounded-[28px] border border-white/70 bg-white/90 p-6 shadow-lg shadow-primary-100/40">
-                        <span class="inline-flex rounded-full bg-secondary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-secondary-700">
-                            <?= esc($relatedProduct['stock_badge']) ?>
-                        </span>
-                        <h3 class="mt-4 text-xl font-bold text-dark-900"><?= esc($relatedProduct['name']) ?></h3>
-                        <p class="mt-3 text-sm leading-7 text-dark-600"><?= esc($relatedProduct['highlight']) ?></p>
-                        <div class="mt-5 flex items-center justify-between gap-3">
-                            <span class="text-lg font-semibold text-primary-700"><?= esc($relatedProduct['price']) ?></span>
-                            <div class="flex flex-wrap items-center gap-3">
-                                <a href="<?= base_url('/products/' . $relatedProduct['slug']) ?>" class="inline-flex items-center gap-2 text-sm font-semibold text-primary-700 hover:text-primary-600">
-                                    Detail
-                                    <i class="bi bi-arrow-right"></i>
-                                </a>
-                                <a href="<?= base_url('/app/customer/cart?add_product=' . urlencode((string) $relatedProduct['id']) . '&qty=1') ?>" class="inline-flex items-center gap-2 text-sm font-semibold text-secondary-700 hover:text-secondary-600">
-                                    Add to cart
-                                    <i class="bi bi-cart-plus"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </article>
+                    <?= view('web/partials/product_card', ['product' => $relatedProduct]) ?>
                 <?php endforeach; ?>
             </div>
         </section>

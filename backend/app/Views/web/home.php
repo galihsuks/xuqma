@@ -5,28 +5,28 @@
     <div class="relative overflow-hidden bg-dark-900 shadow-[0_40px_120px_-45px_rgba(124,58,237,0.55)]">
         <div class="absolute inset-0">
             <img
-                src="<?= base_url('/assets/hero-img.png') ?>"
+                src="<?= base_url('/assets/hero-img-light.png') ?>"
                 alt="Featured IT accessories and computer components"
                 class="h-full w-full object-cover object-center"
             >
         </div>
 
-        <div class="relative mx-auto max-w-7xl grid py-10 lg:py-[140px] px-5 lg:px-8 lg:grid-cols-[1.05fr_0.95fr]">
-            <div class="max-w-3xl">
-                <span class="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.22em] text-secondary-100 backdrop-blur">
+        <div class="relative mx-auto max-w-7xl grid py-20 lg:py-[140px] px-8 lg:px-8 lg:grid-cols-[1.05fr_0.95fr]">
+            <div class="max-w-3xl md:mb-20">
+                <span class="inline-flex items-center gap-2 rounded-full bg-secondary-600/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.22em] text-secondary-600 backdrop-blur">
                     <i class="bi bi-lightning-charge-fill"></i>
                     <?= esc($heroBadge ?? 'Trusted IT Commerce') ?>
                 </span>
 
-                <h1 class="mt-6 max-w-3xl text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+                <h1 class="mt-6 max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
                     Shopping is
-                    <span class="bg-gradient-to-r from-white via-secondary-100 to-primary-200 bg-clip-text text-transparent">
+                    <span class="bg-gradient-to-r from-primary-700 via-secondary-500 to-primary-600 bg-clip-text text-transparent">
                         more focused,
                     </span>
                     not more complicated.
                 </h1>
 
-                <p class="mt-5 max-w-2xl text-base leading-8 text-slate-200 sm:text-lg">
+                <p class="mt-5 max-w-2xl text-base leading-8 text-dark-600 sm:text-lg">
                     XUQMA brings together headphones, phone accessories, monitors, RAM, GPUs, and everyday tech gear
                     in one storefront with clear product highlights, helpful buying guides, and a fast checkout flow.
                 </p>
@@ -36,28 +36,10 @@
                         <i class="bi bi-bag-check"></i>
                         Shop now
                     </a>
-                    <a href="<?= base_url('/articles') ?>" class="inline-flex items-center gap-2 rounded-2xl border border-white/14 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15">
+                    <a href="<?= base_url('/articles') ?>" class="inline-flex items-center gap-2 rounded-2xl border border-dark-200 text-dark-700 hover:border-primary-200 hover:text-primary-700 bg-white/10 px-6 py-3 text-sm font-semibold backdrop-blur transition hover:bg-white/15">
                         <i class="bi bi-journal-richtext"></i>
                         Read buying guides
                     </a>
-                </div>
-
-                <div class="mt-8 grid gap-3 sm:grid-cols-3">
-                    <article class="rounded-[24px] border border-white/10 bg-white/10 p-4 backdrop-blur">
-                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-secondary-100">Fast discovery</p>
-                        <p class="mt-3 text-2xl font-bold text-white">100+</p>
-                        <p class="mt-2 text-sm leading-6 text-slate-200">Products ready to compare</p>
-                    </article>
-                    <article class="rounded-[24px] border border-white/10 bg-white/10 p-4 backdrop-blur">
-                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-secondary-100">For every setup</p>
-                        <p class="mt-3 text-2xl font-bold text-white">Multi</p>
-                        <p class="mt-2 text-sm leading-6 text-slate-200">Categories for work, gaming, and upgrades</p>
-                    </article>
-                    <article class="rounded-[24px] border border-white/10 bg-white/10 p-4 backdrop-blur">
-                        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-secondary-100">Action ready</p>
-                        <p class="mt-3 text-2xl font-bold text-white">/app</p>
-                        <p class="mt-2 text-sm leading-6 text-slate-200">Customer flow ready for checkout</p>
-                    </article>
                 </div>
             </div>
         </div>
@@ -157,29 +139,7 @@
     <?php if (!empty($featuredProducts)): ?>
         <div class="mt-8 grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
             <?php foreach ($featuredProducts as $product): ?>
-                <article class="rounded-[28px] border border-white/70 bg-white/90 p-6 shadow-lg shadow-primary-100/40">
-                    <div class="flex items-center justify-between gap-3">
-                        <span class="inline-flex rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">
-                            <?= esc($product['category_name']) ?>
-                        </span>
-                        <span class="inline-flex rounded-full bg-secondary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-secondary-700">
-                            <?= esc($product['stock_badge']) ?>
-                        </span>
-                    </div>
-                    <h3 class="mt-5 text-xl font-bold text-dark-900"><?= esc($product['name']) ?></h3>
-                    <p class="mt-3 text-sm leading-7 text-dark-600"><?= esc($product['highlight']) ?></p>
-                    <p class="mt-5 text-lg font-semibold text-primary-700"><?= esc($product['price']) ?></p>
-                    <div class="mt-5 flex flex-wrap items-center gap-3">
-                        <a href="<?= base_url('/products/' . $product['slug']) ?>" class="inline-flex items-center gap-2 text-sm font-semibold text-primary-700 hover:text-primary-600">
-                            View detail
-                            <i class="bi bi-arrow-up-right"></i>
-                        </a>
-                        <a href="<?= base_url('/app/customer/cart?add_product=' . urlencode((string) $product['id']) . '&qty=1') ?>" class="inline-flex items-center gap-2 text-sm font-semibold text-secondary-700 hover:text-secondary-600">
-                            Add to cart
-                            <i class="bi bi-cart-plus"></i>
-                        </a>
-                    </div>
-                </article>
+                <?= view('web/partials/product_card', ['product' => $product]) ?>
             <?php endforeach; ?>
         </div>
     <?php else: ?>

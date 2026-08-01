@@ -40,7 +40,14 @@ export const LoginForm = ({ control, onSubmit, loading }: LoginFormProps) => {
         </aside>
 
         <section className="p-7 sm:p-12 flex flex-col justify-center">
-          <AppLogo variant="landscape" className="h-13 w-42 mb-4 block md:hidden" />
+          <div className="flex md:hidden items-center gap-1 mb-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-2xl text-xl font-extrabold text-white shadow-glow">
+              <AppLogo variant="icon" className="h-7 w-auto" />
+            </div>
+            <div>
+              <p className="text-lg font-light text-primary-700 tracking-[0.28em]">UQMA</p>
+            </div>
+          </div>
           <h1 className="text-3xl font-semibold text-slate-800">Welcome back</h1>
           <p className="mt-1 text-sm text-slate-500">Sign in to continue shopping</p>
 

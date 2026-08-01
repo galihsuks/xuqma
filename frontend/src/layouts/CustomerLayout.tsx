@@ -1,4 +1,4 @@
-import { Package, ReceiptText, ShoppingCart, UserRound } from "lucide-react";
+import { Handbag, Package, ReceiptText, UserRound } from "lucide-react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { AppLogo } from "../components/shared/AppLogo";
 import { usePageTitle } from "../hooks/usePageTitle";
@@ -6,15 +6,15 @@ import { cn } from "../utils/cn";
 import { AppSidebar } from "../components/layout/AppSidebar";
 
 const customerNavItems = [
-  { label: "Cart", path: "/customer/cart", icon: ShoppingCart },
+  { label: "Cart", path: "/customer/cart", icon: Handbag },
   { label: "Orders", path: "/customer/orders", icon: Package },
   { label: "History", path: "/customer/history", icon: ReceiptText },
 ];
 
 const publicNavItems = [
-  { label: "Home", path: "/" },
   { label: "Shop", path: "/shop" },
   { label: "Articles", path: "/articles" },
+  { label: "About", path: "/about" },
 ];
 
 export const CustomerLayout = () => {
@@ -24,7 +24,7 @@ export const CustomerLayout = () => {
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(244,114,182,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(167,139,250,0.22),transparent_24%),linear-gradient(180deg,var(--color-light-100),white)]">
-      <header className="sticky top-0 z-30 border-b border-white/70 bg-white/80 backdrop-blur-xl">
+      <header className="hidden md:block sticky top-0 z-30 border-b border-white/70 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 lg:px-8">
           <div className="flex-1">
             <nav className="hidden items-center gap-2 md:flex">

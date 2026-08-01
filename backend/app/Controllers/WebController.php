@@ -31,12 +31,24 @@ class WebController extends BaseController
         return view('web/shop', $this->buildPageData([
             'activeNav' => 'shop',
             'categories' => $this->getStorefrontCategories(),
-            'description' => 'Browse SEO-friendly product discovery pages for phone accessories, headphones, VGA, RAM, monitor, and desk setup gear.',
+            'description' => 'Shop phone accessories, headphones, monitors, RAM, GPUs, and everyday setup gear in one curated IT storefront.',
             'metaType' => 'website',
-            'pageTitle' => 'Shop modern IT gear for work, play, and content creation',
-            'pageSubtitle' => 'A storefront layer designed for search visibility, product discovery, and category landing pages.',
+            'pageTitle' => 'Shop IT gear for work setups, gaming desks, and everyday upgrades',
+            'pageSubtitle' => 'Discover accessories, audio gear, and PC components selected to help you compare faster and shop with confidence.',
             'products' => $this->getStorefrontProducts(),
             'seoTitle' => 'Shop IT Products | Xuqma',
+        ]));
+    }
+
+    public function about()
+    {
+        return view('web/about', $this->buildPageData([
+            'activeNav' => 'about',
+            'description' => 'Learn how Xuqma helps shoppers discover IT accessories, PC components, and practical buying guides through a storefront built for clarity and confidence.',
+            'metaType' => 'website',
+            'pageTitle' => 'About Xuqma',
+            'pageSubtitle' => 'A modern IT storefront built to make buying tech accessories and components feel clearer, faster, and more confident.',
+            'seoTitle' => 'About Xuqma | IT Storefront and Buying Guides',
         ]));
     }
 
@@ -130,13 +142,15 @@ class WebController extends BaseController
         $currentPath = $path === '//' ? '/' : $path;
         $baseUrl = rtrim(base_url(), '/');
         $canonicalUrl = $currentPath === '/' ? $baseUrl . '/' : $baseUrl . $currentPath;
-
+        $isMobile = $this->request->getUserAgent()->isMobile();
+        
         return array_merge([
             'activeNav' => '',
             'appName' => $appName,
             'canonicalUrl' => $canonicalUrl,
             'currentPath' => $currentPath,
             'description' => $appName,
+            'isMobile' => $isMobile,
             'metaImage' => $baseUrl . '/favicon.ico',
             'metaType' => 'website',
             'seoTitle' => $appName,
