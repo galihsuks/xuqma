@@ -94,17 +94,7 @@
     </div>
 
     <?php if (!empty($categories)): ?>
-        <div class="mt-8 grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
-            <?php foreach ($categories as $category): ?>
-                <a href="<?= base_url('/category/' . $category['slug']) ?>" class="rounded-[28px] border border-white/70 bg-white/90 p-6 shadow-lg shadow-primary-100/40 transition hover:-translate-y-1 hover:shadow-xl">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-400 text-xl text-white">
-                        <i class="bi <?= esc($category['icon']) ?>"></i>
-                    </div>
-                    <h3 class="mt-5 text-xl font-bold text-dark-900"><?= esc($category['name']) ?></h3>
-                    <p class="mt-3 text-sm leading-7 text-dark-600"><?= esc($category['description']) ?></p>
-                </a>
-            <?php endforeach; ?>
-        </div>
+        <?= view('web/partials/category_list', ['categories' => $categories]) ?>
     <?php else: ?>
         <div class="mt-8">
             <?= view('web/partials/empty_state', [

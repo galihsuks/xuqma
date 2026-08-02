@@ -16,17 +16,7 @@
     </div>
 
     <?php if (!empty($categories)): ?>
-        <div class="mt-10 grid gap-4 lg:grid-cols-4">
-            <?php foreach ($categories as $category): ?>
-                <a href="<?= base_url('/category/' . $category['slug']) ?>" class="rounded-[26px] border border-white/70 bg-white/90 p-5 shadow-lg shadow-primary-100/35 transition hover:-translate-y-1 hover:shadow-xl">
-                    <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-secondary-400 text-lg text-white">
-                        <i class="bi <?= esc($category['icon']) ?>"></i>
-                    </div>
-                    <h2 class="mt-4 text-lg font-bold text-dark-900"><?= esc($category['name']) ?></h2>
-                    <p class="mt-2 text-sm leading-6 text-dark-600"><?= esc($category['description']) ?></p>
-                </a>
-            <?php endforeach; ?>
-        </div>
+        <?= view('web/partials/category_list', ['categories' => $categories]) ?>
     <?php endif; ?>
 
     <?php if (!empty($products)): ?>
