@@ -150,8 +150,9 @@
         }
     </style>
 </head>
-<body class="text-dark-900 bg-[radial-gradient(circle_at_top_left,rgba(244,114,182,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(167,139,250,0.22),transparent_24%),linear-gradient(180deg,var(--color-light-100),white)]">
-    <div class="min-h-screen pb-24 md:pb-0">
+<body class="text-dark-900">
+    <div class="absolute h-screen w-[100%] z-0 bg-[radial-gradient(circle_at_top_left,rgba(244,114,182,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(167,139,250,0.22),transparent_24%),linear-gradient(180deg,var(--color-light-100),white)]"></div>
+    <div class="absolute min-h-screen w-[100%] z-1 pb-24 md:pb-0">
         <header class="sticky top-0 z-30 border-b border-white/70 bg-white/80 backdrop-blur-xl h-[65px] md:h-auto">
             <div class="relative mx-auto flex max-w-7xl items-center justify-between px-5 py-3 lg:px-8 h-full">
                 <div class="flex-1">

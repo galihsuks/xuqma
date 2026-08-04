@@ -15,9 +15,9 @@ class WebController extends BaseController
 
         return view('web/home', $this->buildPageData([
             'activeNav' => 'home',
-            'categories' => array_slice($categories, 0, 4),
+            'categories' => $categories,
             'description' => 'IT commerce storefront for accessories, headphones, monitors, VGA, RAM, and other computer components with SEO-friendly public pages.',
-            'featuredProducts' => $featuredProducts !== [] ? $featuredProducts : array_slice($products, 0, 4),
+            'featuredProducts' => $featuredProducts,
             'metaType' => 'website',
             'latestArticles' => array_slice($articles, 0, 3),
             'pageTitle' => 'Build your setup with curated IT gear, accessories, and upgrade-ready components',
@@ -179,7 +179,7 @@ class WebController extends BaseController
 
     private function getStorefrontFeaturedProducts(): array
     {
-        $products = $this->productModel->getFeaturedVisibleProducts(4);
+        $products = $this->productModel->getFeaturedVisibleProducts(3);
         if ($products === []) {
             return [];
         }

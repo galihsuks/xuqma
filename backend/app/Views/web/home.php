@@ -127,7 +127,7 @@
     </div>
 
     <?php if (!empty($featuredProducts)): ?>
-        <div class="mt-8 grid gap-6 lg:grid-cols-2 xl:grid-cols-4">
+        <div class="mt-8 grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
             <?php foreach ($featuredProducts as $product): ?>
                 <?= view('web/partials/product_card', ['product' => $product]) ?>
             <?php endforeach; ?>

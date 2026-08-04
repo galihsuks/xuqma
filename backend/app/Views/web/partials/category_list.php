@@ -8,7 +8,7 @@
                     href="<?= base_url('/category/' . $category['slug']) ?>"
                     class="flex w-[118px] shrink-0 flex-col items-center justify-center rounded-[28px] px-4 py-5 text-center shadow-primary-100/35 transition hover:-translate-y-1 hover:shadow-lg"
                 >
-                    <div class="flex h-16 w-16 items-center justify-center rounded-[24px] text-3xl text-white border border-white/70 bg-white/90">
+                    <div class="flex h-16 w-16 items-center justify-center rounded-[24px] text-3xl text-white">
                         <i class="bi <?= esc($category['icon']) ?> bg-gradient-to-br from-primary-500 to-secondary-400 bg-clip-text text-transparent"></i>
                     </div>
                     <p class="mt-4 text-sm font-light leading-5 text-dark-900"><?= esc($category['name']) ?></p>

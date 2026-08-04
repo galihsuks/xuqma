@@ -109,7 +109,7 @@ class ProductModel extends BaseModel
             ->findAll();
     }
 
-    public function getFeaturedVisibleProducts(int $limit = 4): array
+    public function getFeaturedVisibleProducts(int $limit = 3): array
     {
         return $this->baseSelect()
             ->where('products.display', 1)
