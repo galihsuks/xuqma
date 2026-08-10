@@ -5,7 +5,7 @@ $detailUrl = base_url('/products/' . ($productData['slug'] ?? ''));
 $cartUrl = base_url('/app/customer/cart?add_product=' . urlencode((string) ($productData['id'] ?? '')) . '&qty=1');
 ?>
 
-<a href="<?= esc($detailUrl) ?>" class="block rounded-[12px] md:rounded-[28px] border border-white/70 bg-white/90 p-0 md:p-6 shadow-none md:shadow-lg shadow-primary-100/40">
+<a href="<?= esc($detailUrl) ?>" class="block rounded-[12px] md:rounded-[28px] bg-white/90 p-3 md:p-6 shadow-lg shadow-primary-100/40 transition md:hover:-translate-y-1 md:hover:shadow-xl">
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-1 md:gap-3">
         <span class="block rounded-full bg-primary-50 px-2 md:px-3 py-1 text-[6px] md:text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">
             <?= esc($productData['category_name'] ?? '') ?>

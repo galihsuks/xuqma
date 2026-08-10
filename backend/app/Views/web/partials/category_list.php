@@ -1,7 +1,7 @@
 <?php $categoryItems = $categories ?? []; ?>
 
 <?php if (!empty($categoryItems)): ?>
-    <div class="mt-5 md:mt-8 pt-1 pb-4 overflow-x-auto px-8 md:px-0" style="scrollbar-width:none;-ms-overflow-style:none;">
+    <div class="mt-5 md:mt-8 pt-1 pb-4 overflow-x-auto px-5 md:px-0" style="scrollbar-width:none;-ms-overflow-style:none;">
         <div class="flex min-w-max gap-0 md:gap-4" style="-webkit-overflow-scrolling:touch;">
             <?php foreach ($categoryItems as $category): ?>
                 <a

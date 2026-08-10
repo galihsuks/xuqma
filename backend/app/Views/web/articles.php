@@ -16,30 +16,11 @@
     </div>
 
     <?php if (!empty($articles)): ?>
-        <div class="mt-10 grid gap-6 lg:grid-cols-3">
-            <?php foreach ($articles as $article): ?>
-                <article class="rounded-[28px] border border-white/70 bg-white/90 p-6 shadow-lg shadow-primary-100/40 transition hover:-translate-y-1 hover:shadow-xl">
-                    <div class="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-primary-700">
-                        <span><?= esc($article['category']) ?></span>
-                        <span class="h-1 w-1 rounded-full bg-primary-300"></span>
-                        <span><?= esc($article['read_time']) ?></span>
-                    </div>
-                    <h2 class="mt-4 text-2xl font-bold text-dark-900">
-                        <a href="<?= base_url('/articles/' . $article['slug']) ?>" class="transition hover:text-primary-700">
-                            <?= esc($article['title']) ?>
-                        </a>
-                    </h2>
-                    <p class="mt-4 text-base leading-7 text-dark-600"><?= esc($article['excerpt']) ?></p>
-                    <div class="mt-6 flex items-center justify-between">
-                        <span class="text-sm text-dark-400"><?= esc($article['published_at']) ?></span>
-                        <a href="<?= base_url('/articles/' . $article['slug']) ?>" class="inline-flex items-center gap-2 text-sm font-semibold text-primary-700 hover:text-primary-600">
-                            Read article
-                            <i class="bi bi-arrow-right"></i>
-                        </a>
-                    </div>
-                </article>
-            <?php endforeach; ?>
-        </div>
+        <?= view('web/partials/article_list', [
+            'articles' => $articles,
+            'gridClass' => 'mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3',
+            'titleTag' => 'h2',
+        ]) ?>
     <?php else: ?>
         <div class="mt-10">
             <?= view('web/partials/empty_state', [

@@ -11,7 +11,7 @@
             >
         </div>
 
-        <div class="relative mx-auto max-w-7xl grid py-20 lg:py-[140px] px-8 lg:px-8 lg:grid-cols-[1.05fr_0.95fr]">
+        <div class="relative mx-auto max-w-7xl grid py-20 lg:py-[140px] px-6 lg:px-8 lg:grid-cols-[1.05fr_0.95fr]">
             <div class="max-w-3xl md:mb-20">
                 <span class="inline-flex items-center gap-2 rounded-full bg-secondary-600/10 px-4 py-2 text-xs md:text-sm font-semibold uppercase tracking-[0.22em] text-secondary-600 backdrop-blur">
                     <i class="bi bi-lightning-charge-fill"></i>
@@ -46,7 +46,7 @@
     </div>
 </section>
 
-<section class="mx-auto max-w-7xl py-10 lg:py-14 px-5 lg:px-8">
+<section class="mx-auto max-w-7xl py-10 lg:py-14 px-2 lg:px-8">
     <div class="grid gap-5 md:grid-cols-3">
         <article class="rounded-[28px] border border-white/70 bg-white/90 p-6 shadow-lg shadow-primary-100/35">
             <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
@@ -78,7 +78,7 @@
     </div>
 </section>
 
-<section class="mx-auto max-w-7xl px-8 pb-6 lg:px-8">
+<section class="mx-auto max-w-7xl px-6 pb-6 lg:px-8">
     <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div class="max-w-2xl">
             <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary-700">Shop by category</p>
@@ -112,7 +112,7 @@
     <?php endif; ?>
 </section>
 
-<section class="mx-auto max-w-7xl px-8 py-10 lg:px-8 lg:py-14">
+<section class="mx-auto max-w-7xl px-6 py-10 lg:px-8 lg:py-14">
     <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div class="max-w-2xl">
             <p class="text-sm font-semibold uppercase tracking-[0.22em] text-secondary-700">Featured picks</p>
@@ -149,7 +149,7 @@
     <?php endif; ?>
 </section>
 
-<section class="mx-auto max-w-7xl px-8 py-10 lg:px-8 lg:py-14">
+<section class="mx-auto max-w-7xl px-6 py-10 lg:px-8 lg:py-14">
     <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div class="max-w-2xl">
             <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary-700">Content that converts</p>
@@ -165,23 +165,12 @@
     </div>
 
     <?php if (!empty($latestArticles)): ?>
-        <div class="mt-8 grid gap-6 lg:grid-cols-3">
-            <?php foreach ($latestArticles as $article): ?>
-                <article class="rounded-[28px] border border-white/70 bg-white/90 p-6 shadow-lg shadow-primary-100/40 transition hover:-translate-y-1 hover:shadow-xl">
-                    <div class="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-primary-700">
-                        <span><?= esc($article['category']) ?></span>
-                        <span class="h-1 w-1 rounded-full bg-primary-300"></span>
-                        <span><?= esc($article['read_time']) ?></span>
-                    </div>
-                    <h3 class="mt-4 text-2xl font-bold text-dark-900">
-                        <a href="<?= base_url('/articles/' . $article['slug']) ?>" class="transition hover:text-primary-700">
-                            <?= esc($article['title']) ?>
-                        </a>
-                    </h3>
-                    <p class="mt-4 text-base leading-7 text-dark-600"><?= esc($article['excerpt']) ?></p>
-                </article>
-            <?php endforeach; ?>
-        </div>
+        <?= view('web/partials/article_list', [
+            'articles' => $latestArticles,
+            'gridClass' => 'mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3',
+            'showPublishedAt' => false,
+            'showReadMore' => false,
+        ]) ?>
     <?php else: ?>
         <div class="mt-8">
             <?= view('web/partials/empty_state', [

@@ -291,57 +291,55 @@
         </nav>
 
         <footer class="mt-16 border-t border-white/70 bg-primary-50/75 backdrop-blur-xl">
-            <div class="mx-auto max-w-7xl px-5 lg:px-8 pt-10">
-                <div class="grid gap-8 lg:grid-cols-[1.15fr_0.7fr_0.7fr_0.95fr]">
-                    <section class="max-w-md">
+            <div class="mx-auto max-w-7xl px-6 lg:px-8 pt-10">
+                <div class="flex gap-10 items-start md:items-center flex-col md:flex-row">
+                    <section class="flex-1">
                         <a href="<?= base_url('/') ?>" class="flex items-center gap-2">
                             <div class="flex h-9 w-9 items-center justify-center rounded-2xl text-xl font-extrabold text-white shadow-glow">
                                 <img src="/assets/app_logo/mark.png" alt="UQMA">
                             </div>
                             <span class="text-lg font-light tracking-[0.28em] text-primary-700">UQMA</span>
                         </a>
-                        <p class="mt-4 text-sm leading-7 text-dark-600">
+                        <p class="mt-4 text-xs md:text-sm leading-5 md:leading-7 text-dark-600">
                             A curated IT storefront for smart accessories, audio gear, and PC components that help customers upgrade with confidence.
                         </p>
-                        <div class="mt-5 flex flex-wrap gap-2">
-                            <span class="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">
-                                IT Accessories
+                        <div class="mt-3 md:mt-5 flex flex-wrap gap-2">
+                            <span class="flex justify-center w-[30px] h-[30px] rounded-full items-center rounded-full bg-primary-50 text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">
+                                <i class="bi bi-instagram"></i>
                             </span>
-                            <span class="inline-flex items-center rounded-full bg-secondary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-secondary-700">
-                                PC Components
+                            <span class="flex justify-center w-[30px] h-[30px] rounded-full items-center rounded-full bg-secondary-50 text-xs font-semibold uppercase tracking-[0.18em] text-secondary-700">
+                                <i class="bi bi-threads"></i>
                             </span>
-                            <span class="inline-flex items-center rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">
-                                Buying Guides
+                            <span class="flex justify-center w-[30px] h-[30px] rounded-full items-center rounded-full bg-primary-50 text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">
+                                <i class="bi bi-envelope-paper"></i>
                             </span>
                         </div>
                     </section>
 
-                    <section>
-                        <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary-700">Explore</p>
-                        <nav class="mt-4 grid gap-3 text-sm text-dark-600">
-                            <a href="<?= base_url('/') ?>" class="transition hover:text-primary-700">Home</a>
-                            <a href="<?= base_url('/shop') ?>" class="transition hover:text-primary-700">Shop</a>
-                            <a href="<?= base_url('/articles') ?>" class="transition hover:text-primary-700">Articles</a>
-                            <a href="<?= base_url('/about') ?>" class="transition hover:text-primary-700">About</a>
-                        </nav>
-                    </section>
+                    <div class="flex gap-[50px] md:gap-10">
+                        <section>
+                            <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary-700">Explore</p>
+                            <nav class="mt-4 grid gap-1 md:gap-3 text-xs md:text-sm text-dark-600">
+                                <a href="<?= base_url('/') ?>" class="transition hover:text-primary-700">Home</a>
+                                <a href="<?= base_url('/shop') ?>" class="transition hover:text-primary-700">Shop</a>
+                                <a href="<?= base_url('/articles') ?>" class="transition hover:text-primary-700">Articles</a>
+                                <a href="<?= base_url('/about') ?>" class="transition hover:text-primary-700">About</a>
+                            </nav>
+                        </section>
+                        <section>
+                            <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary-700">Customer</p>
+                            <nav class="mt-4 grid gap-1 md:gap-3 text-xs md:text-sm text-dark-600">
+                                <a href="<?= base_url('/app/customer/cart') ?>" class="transition hover:text-primary-700">Cart</a>
+                                <a href="<?= base_url('/app/customer/orders') ?>" class="transition hover:text-primary-700">Orders</a>
+                                <a href="<?= base_url('/app/customer/history') ?>" class="transition hover:text-primary-700">History</a>
+                                <a href="<?= base_url('/app/customer/profile') ?>" class="transition hover:text-primary-700">Profile</a>
+                            </nav>
+                        </section>
+                    </div>
 
-                    <section>
-                        <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary-700">Customer</p>
-                        <nav class="mt-4 grid gap-3 text-sm text-dark-600">
-                            <a href="<?= base_url('/app/customer/cart') ?>" class="transition hover:text-primary-700">Cart</a>
-                            <a href="<?= base_url('/app/customer/orders') ?>" class="transition hover:text-primary-700">Orders</a>
-                            <a href="<?= base_url('/app/customer/history') ?>" class="transition hover:text-primary-700">History</a>
-                            <a href="<?= base_url('/app/customer/profile') ?>" class="transition hover:text-primary-700">Profile</a>
-                        </nav>
-                    </section>
-
-                    <section class="rounded-[28px] border border-primary-100 bg-gradient-to-br from-primary-50 via-white to-secondary-50 p-6">
+                    <section class="w-full md:w-[300px] rounded-[28px] border border-primary-100 bg-gradient-to-br from-primary-50 via-white to-secondary-50 p-6">
                         <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary-700">Ready to shop?</p>
                         <h2 class="mt-3 text-2xl font-bold tracking-tight text-dark-900">Start browsing your next upgrade today.</h2>
-                        <p class="mt-3 text-sm leading-7 text-dark-600">
-                            Discover popular tech picks, compare product highlights, and move into checkout when you are ready.
-                        </p>
                         <div class="mt-5 flex flex-wrap gap-3">
                             <a href="<?= base_url('/shop') ?>" class="inline-flex items-center gap-2 rounded-2xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-200/70 transition hover:bg-primary-500">
                                 <i class="bi bi-bag-check"></i>
@@ -356,8 +354,9 @@
                 </div>
 
                 <div class="mt-8 flex flex-col gap-3 border-t border-primary-200 pt-5 pb-6 text-sm text-dark-500 md:flex-row md:items-center md:justify-between">
-                    <p>&copy; <?= esc(date('Y')) ?> XUQMA. Built for modern tech shopping journeys.</p>
-                    <div class="flex flex-wrap items-center gap-4">
+                    <p class="hidden md:block">&copy; <?= esc(date('Y')) ?> XUQMA. Built for modern tech shopping journeys.</p>
+                    <p class="md:hidden block text-center text-xs">&copy; <?= esc(date('Y')) ?> XUQMA</p>
+                    <div class="hidden md:flex flex-wrap items-center gap-4">
                         <a href="<?= base_url('/shop') ?>" class="transition hover:text-primary-700">Shop Accessories</a>
                         <a href="<?= base_url('/articles') ?>" class="transition hover:text-primary-700">Read Articles</a>
                         <a href="<?= base_url('/app/customer/cart') ?>" class="transition hover:text-primary-700">Go to Cart</a>
