@@ -92,7 +92,8 @@
             <i class="bi bi-arrow-right"></i>
         </a>
     </div>
-
+</section>
+<section class="mx-auto max-w-7xl px-0 pb-6 lg:px-8">
     <?php if (!empty($categories)): ?>
         <?= view('web/partials/category_list', ['categories' => $categories]) ?>
     <?php else: ?>
@@ -127,7 +128,7 @@
     </div>
 
     <?php if (!empty($featuredProducts)): ?>
-        <div class="mt-8 grid gap-2 md:gap-6 grid-cols-2 lg:grid-cols-3">
+        <div class="mt-8 grid gap-3 md:gap-6 grid-cols-2 lg:grid-cols-3">
             <?php foreach ($featuredProducts as $product): ?>
                 <?= view('web/partials/product_card', ['product' => $product]) ?>
             <?php endforeach; ?>
@@ -148,12 +149,12 @@
     <?php endif; ?>
 </section>
 
-<section class="mx-auto max-w-7xl px-5 py-10 lg:px-8 lg:py-14">
+<section class="mx-auto max-w-7xl px-8 py-10 lg:px-8 lg:py-14">
     <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div class="max-w-2xl">
             <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary-700">Content that converts</p>
             <h2 class="mt-3 text-3xl font-bold tracking-tight text-dark-900">Helpful articles for smarter tech buying decisions</h2>
-            <p class="mt-3 text-base leading-8 text-dark-600">
+            <p class="mt-3 text-sm md:text-base leading-6 md:leading-8 text-dark-600">
                 Read practical guides, comparisons, and upgrade tips that make it easier to choose the right product before you spend.
             </p>
         </div>

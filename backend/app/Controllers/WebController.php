@@ -9,7 +9,6 @@ class WebController extends BaseController
     public function home()
     {
         $categories = $this->getStorefrontCategories();
-        $products = $this->getStorefrontProducts();
         $featuredProducts = $this->getStorefrontFeaturedProducts();
         $articles = $this->getStorefrontArticles();
 
@@ -179,7 +178,8 @@ class WebController extends BaseController
 
     private function getStorefrontFeaturedProducts(): array
     {
-        $products = $this->productModel->getFeaturedVisibleProducts(3);
+        $isMobile = $this->request->getUserAgent()->isMobile();
+        $products = $this->productModel->getFeaturedVisibleProducts($isMobile ? 4 : 3);
         if ($products === []) {
             return [];
         }
