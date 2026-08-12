@@ -15,7 +15,7 @@
             <div class="max-w-3xl md:mb-20">
                 <span class="inline-flex items-center gap-2 rounded-full bg-secondary-600/10 px-4 py-2 text-xs md:text-sm font-semibold uppercase tracking-[0.22em] text-secondary-600 backdrop-blur">
                     <i class="bi bi-lightning-charge-fill"></i>
-                    <?= esc($heroBadge ?? 'Trusted IT Commerce') ?>
+                    Trusted IT Commerce
                 </span>
 
                 <h1 class="hidden md:block mt-6 max-w-[200px] md:max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
@@ -25,7 +25,7 @@
                     </span>
                     not more complicated.
                 </h1>
-                <h1 class="md:hidden block mt-6 max-w-[220px] md:max-w-3xl text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+                <h1 class="md:hidden block mt-6 max-w-[220px] md:max-w-3xl font-extrabold tracking-tight sm:text-5xl text-4xl lg:text-6xl">
                     Less
                     <span class="bg-gradient-to-r from-primary-700 via-secondary-500 to-primary-600 bg-clip-text text-transparent">
                         complexity.

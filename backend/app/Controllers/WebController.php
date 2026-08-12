@@ -19,8 +19,6 @@ class WebController extends BaseController
             'featuredProducts' => $featuredProducts,
             'metaType' => 'website',
             'latestArticles' => array_slice($articles, 0, 3),
-            'pageTitle' => 'Build your setup with curated IT gear, accessories, and upgrade-ready components',
-            'pageSubtitle' => 'Use CodeIgniter for SEO-focused storefront pages, and hand off cart, order, and admin workflows to React under /app.',
             'seoTitle' => 'Xuqma | IT accessories, components, and setup gear',
         ]));
     }
@@ -32,7 +30,7 @@ class WebController extends BaseController
             'categories' => $this->getStorefrontCategories(),
             'description' => 'Shop phone accessories, headphones, monitors, RAM, GPUs, and everyday setup gear in one curated IT storefront.',
             'metaType' => 'website',
-            'pageTitle' => 'Shop IT gear for work setups, gaming desks, and everyday upgrades',
+            'pageTitle' => '',
             'pageSubtitle' => 'Discover accessories, audio gear, and PC components selected to help you compare faster and shop with confidence.',
             'products' => $this->getStorefrontProducts(),
             'seoTitle' => 'Shop IT Products | Xuqma',
