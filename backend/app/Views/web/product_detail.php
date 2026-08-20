@@ -1,5 +1,5 @@
 <?php $cartUrl = base_url('/app/customer/cart?add_product=' . urlencode((string) $product['id']) . '&qty=1'); ?>
-<?php $loginUrl = base_url('/app/login?redirect=' . urlencode('/customer/cart?add_product=' . (string) $product['id'] . '&qty=1')); ?>
+<?php $loginUrl = base_url('/login?redirect=' . urlencode('/app/customer/cart?add_product=' . (string) $product['id'] . '&qty=1')); ?>
 <?= $this->extend('web/layouts/app') ?>
 
 <?= $this->section('content') ?>

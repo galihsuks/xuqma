@@ -12,9 +12,8 @@ type RequestMeta = {
 
 const api = axios.create({
   baseURL: envVar.API_URL,
+  withCredentials: true,
 });
-
-const appBasePath = import.meta.env.BASE_URL || "/";
 
 api.interceptors.request.use((config) => {
   const requestId = generateRequestId();
@@ -24,11 +23,6 @@ api.interceptors.request.use((config) => {
   };
 
   config.headers["X-Request-Id"] = requestId;
-
-  const token = useAuthStore.getState().token;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
 
   return config;
 });
@@ -54,7 +48,8 @@ api.interceptors.response.use(
       queryClient.clear();
       const { logout } = useAuthStore.getState().actions;
       logout();
-      window.location.href = `${appBasePath}login`;
+      const redirect = `${window.location.pathname}${window.location.search}`;
+      window.location.replace(`/login?redirect=${encodeURIComponent(redirect)}`);
     }
 
     return Promise.reject(error);

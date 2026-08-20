@@ -3,7 +3,7 @@
 Frontend ini adalah admin panel untuk `galih-base-app`.
 
 Project React ini fokus pada:
-- login admin
+- customer dan admin app setelah user lolos login dari CodeIgniter
 - protected routing
 - sidebar berbasis menu access dari backend
 - access control per halaman
@@ -113,18 +113,9 @@ src/pages/{group}/{menu}/
   schemas/
 ```
 
-Contoh:
-
-```text
-src/pages/auth/login/
-  LoginPage.tsx
-  components/
-  schemas/
-```
-
 Group utama yang sekarang dipakai:
 
-- `auth`
+- `customer`
 - `main`
 - `system`
 
@@ -132,13 +123,16 @@ Group utama yang sekarang dipakai:
 
 Route utama:
 
-- `/login`
-- `/dashboard`
-- `/system/menu`
-- `/system/role`
-- `/system/user`
-- `/system/parameter`
-- `/system/log`
+- `/customer/cart`
+- `/customer/orders`
+- `/customer/history`
+- `/customer/profile`
+- `/admin/dashboard`
+- `/admin/system/menu`
+- `/admin/system/role`
+- `/admin/system/user`
+- `/admin/system/parameter`
+- `/admin/system/log`
 
 Routing sudah memakai:
 - `RouterProvider`
@@ -154,10 +148,11 @@ File penting:
 
 Flow auth:
 
-1. login ke `/api/auth/login`
-2. token disimpan di Zustand persist
-3. request API otomatis kirim bearer token lewat axios interceptor
-4. jika `401`, user di-logout otomatis
+1. user login lewat halaman CodeIgniter di `/login`
+2. CodeIgniter menyimpan session auth dan cookie `auth_token`
+3. React bootstrap user login lewat `GET /api/auth/me`
+4. request API protected otomatis kirim cookie via `withCredentials`
+5. jika `401`, user di-logout otomatis dan dikirim balik ke `/login`
 
 Flow access:
 
@@ -296,8 +291,8 @@ Kalau `npm run build` berhasil, maka output siap di-serve sebagai static admin a
 
 Frontend ini diasumsikan consume backend CodeIgniter pada:
 
-- `POST /api/auth/login`
 - `POST /api/auth/logout`
+- `GET /api/auth/me`
 - `GET /api/access/menu`
 - `GET /api/access/control/{menu_id}`
 - endpoint master lain sesuai feature

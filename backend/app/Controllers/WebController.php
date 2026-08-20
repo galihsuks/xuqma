@@ -140,18 +140,42 @@ class WebController extends BaseController
         $baseUrl = rtrim(base_url(), '/');
         $canonicalUrl = $currentPath === '/' ? $baseUrl . '/' : $baseUrl . $currentPath;
         $isMobile = $this->request->getUserAgent()->isMobile();
+        $isLoggedIn = (bool) session('is_authenticated');
+        $loginRoleCode = (string) session('auth_role_code');
+        $isCustomerRole = $loginRoleCode === 'C';
+        $showCustomerAppNav = !$isLoggedIn || $isCustomerRole;
         
         return array_merge([
             'activeNav' => '',
             'appName' => $appName,
+            'appCartUrl' => $this->buildAppNavUrl('/app/customer/cart', $isLoggedIn),
+            'appHistoryUrl' => $this->buildAppNavUrl('/app/customer/history', $isLoggedIn),
+            'appOrdersUrl' => $this->buildAppNavUrl('/app/customer/orders', $isLoggedIn),
+            'appProfileUrl' => $this->buildAppNavUrl('/app/customer/profile', $isLoggedIn),
             'canonicalUrl' => $canonicalUrl,
             'currentPath' => $currentPath,
             'description' => $appName,
             'isMobile' => $isMobile,
+            'isCustomerRole' => $isCustomerRole,
+            'isLoggedIn' => $isLoggedIn,
+            'loginRoleCode' => $loginRoleCode,
             'metaImage' => $baseUrl . '/favicon.ico',
             'metaType' => 'website',
             'seoTitle' => $appName,
+            'showCustomerAppNav' => $showCustomerAppNav,
         ], $data);
+    }
+
+    private function buildAppNavUrl(string $targetPath, bool $isLoggedIn): string
+    {
+        if ($isLoggedIn) {
+            return base_url($targetPath);
+        }
+
+        if (str_contains($targetPath, 'profile')) {
+            return base_url('/login');
+        }
+        return base_url('/login?redirect=' . urlencode($targetPath));
     }
 
     private function getStorefrontCategories(): array

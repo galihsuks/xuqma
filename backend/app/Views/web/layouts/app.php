@@ -191,27 +191,31 @@
 
                 <div class="flex-1 flex justify-end">
                     <div class="flex flex-wrap items-center gap-2">
-                        <?php $navItems = [
-                            ['display' => 'block', 'icon' => 'bi-bag', 'href' => base_url('/app/customer/cart')],
-                            ['display' => 'hidden md:block', 'icon' => 'bi-box-seam', 'href' => base_url('/app/customer/orders')],
-                            ['display' => 'hidden md:block', 'icon' => 'bi-receipt', 'href' => base_url('/app/customer/history')],
-                        ]; ?>
-                        <?php foreach ($navItems as $item): ?>
-                            <a
-                                href="<?= esc($item['href']) ?>"
-                                class="<?= $item['display']; ?> relative rounded-full px-3 py-3 text-sm font-semibold text-dark-600 transition hover:bg-primary-50 hover:text-primary-700"
-                            >
-                                <i class="block -translate-y-[3px] translate-x-[2px] h-4 w-4 bi <?= $item['icon']; ?>"></i>
-                                <?php if ($item['icon'] === 'bi-bag'): ?>
-                                    <span class="absolute right-0.5 top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-secondary-500 px-1 text-[10px] font-bold leading-none text-white">
-                                        3
-                                    </span>
-                                <?php endif; ?>
-                            </a>
-                        <?php endforeach; ?>
-                        <span class="hidden md:block w-[1px] h-[80%] bg-dark-200"></span>
+                        <?php if ($showCustomerAppNav): ?>
+                            <?php $navItems = [
+                                ['display' => 'block', 'icon' => 'bi-bag', 'href' => $appCartUrl],
+                                ['display' => 'hidden md:block', 'icon' => 'bi-box-seam', 'href' => $appOrdersUrl],
+                                ['display' => 'hidden md:block', 'icon' => 'bi-receipt', 'href' => $appHistoryUrl],
+                            ]; ?>
+                            <?php foreach ($navItems as $item): ?>
+                                <a
+                                    href="<?= esc($item['href']) ?>"
+                                    class="<?= $item['display']; ?> relative rounded-full px-3 py-3 text-sm font-semibold text-dark-600 transition hover:bg-primary-50 hover:text-primary-700"
+                                >
+                                    <i class="block -translate-y-[3px] translate-x-[2px] h-4 w-4 bi <?= $item['icon']; ?>"></i>
+                                    <?php if ($item['icon'] === 'bi-bag'): ?>
+                                        <span class="absolute right-0.5 top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-secondary-500 px-1 text-[10px] font-bold leading-none text-white">
+                                            3
+                                        </span>
+                                    <?php endif; ?>
+                                </a>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                        <?php if ($showCustomerAppNav): ?>
+                            <span class="hidden md:block w-[1px] h-[80%] bg-dark-200"></span>
+                        <?php endif; ?>
                         <a
-                            href="<?= base_url('/app/customer/profile'); ?>"
+                            href="<?= esc($appProfileUrl); ?>"
                             class="hidden md:block rounded-full px-3 py-3 text-sm font-semibold text-dark-600 transition hover:bg-primary-50 hover:text-primary-700"
                         >
                             <i class="block -translate-y-[3px] translate-x-[2px] h-4 w-4 bi bi-person"></i>
@@ -226,39 +230,60 @@
         </main>
 
         <nav class="fixed inset-x-0 bottom-0 z-40 px-4 pb-4 pt-3 md:hidden">
-            <div class="mx-auto grid max-w-lg grid-cols-5 items-end rounded-full border border-white/70 bg-white/90 p-1 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.35)] backdrop-blur-xl">
-                <?php $mobileNavItems = [
-                    [
-                        'label' => 'Cart',
-                        'icon' => 'bi-bag',
-                        'href' => base_url('/app/customer/cart'),
-                        'active' => str_starts_with((string) ($currentPath ?? ''), '/app/customer/cart'),
-                    ],
-                    [
-                        'label' => 'Orders',
-                        'icon' => 'bi-box-seam',
-                        'href' => base_url('/app/customer/orders'),
-                        'active' => str_starts_with((string) ($currentPath ?? ''), '/app/customer/orders'),
-                    ],
-                    [
-                        'label' => 'Products',
-                        'href' => base_url('/shop'),
-                        'active' => ($activeNav ?? '') === 'shop',
-                        'featured' => true,
-                    ],
-                    [
-                        'label' => 'History',
-                        'icon' => 'bi-receipt',
-                        'href' => base_url('/app/customer/history'),
-                        'active' => str_starts_with((string) ($currentPath ?? ''), '/app/customer/history'),
-                    ],
-                    [
-                        'label' => 'Profile',
-                        'icon' => 'bi-person',
-                        'href' => base_url('/app/customer/profile'),
-                        'active' => str_starts_with((string) ($currentPath ?? ''), '/app/customer/profile'),
-                    ],
-                ]; ?>
+            <div class="mx-auto grid max-w-lg <?= $showCustomerAppNav ? 'grid-cols-5' : 'grid-cols-3' ?> items-end rounded-full border border-white/70 bg-white/90 p-1 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.35)] backdrop-blur-xl">
+                <?php $mobileNavItems = $showCustomerAppNav
+                    ? [
+                        [
+                            'label' => 'Cart',
+                            'icon' => 'bi-bag',
+                            'href' => $appCartUrl,
+                            'active' => str_starts_with((string) ($currentPath ?? ''), '/app/customer/cart'),
+                        ],
+                        [
+                            'label' => 'Orders',
+                            'icon' => 'bi-box-seam',
+                            'href' => $appOrdersUrl,
+                            'active' => str_starts_with((string) ($currentPath ?? ''), '/app/customer/orders'),
+                        ],
+                        [
+                            'label' => 'Products',
+                            'href' => base_url('/shop'),
+                            'active' => ($activeNav ?? '') === 'shop',
+                            'featured' => true,
+                        ],
+                        [
+                            'label' => 'History',
+                            'icon' => 'bi-receipt',
+                            'href' => $appHistoryUrl,
+                            'active' => str_starts_with((string) ($currentPath ?? ''), '/app/customer/history'),
+                        ],
+                        [
+                            'label' => 'Profile',
+                            'icon' => 'bi-person',
+                            'href' => $appProfileUrl,
+                            'active' => str_starts_with((string) ($currentPath ?? ''), '/app/customer/profile'),
+                        ],
+                    ]
+                    : [
+                        [
+                            'label' => 'Shop',
+                            'icon' => 'bi-shop',
+                            'href' => base_url('/shop'),
+                            'active' => ($activeNav ?? '') === 'shop',
+                        ],
+                        [
+                            'label' => 'Products',
+                            'href' => base_url('/shop'),
+                            'active' => ($activeNav ?? '') === 'shop',
+                            'featured' => true,
+                        ],
+                        [
+                            'label' => 'Profile',
+                            'icon' => 'bi-person',
+                            'href' => $appProfileUrl,
+                            'active' => str_starts_with((string) ($currentPath ?? ''), '/app/customer/profile'),
+                        ],
+                    ]; ?>
 
                 <?php foreach ($mobileNavItems as $item): ?>
                     <?php if (($item['featured'] ?? false) === true): ?>
@@ -329,10 +354,10 @@
                         <section>
                             <p class="text-sm font-semibold uppercase tracking-[0.22em] text-primary-700">Customer</p>
                             <nav class="mt-4 grid gap-1 md:gap-3 text-xs md:text-sm text-dark-600">
-                                <a href="<?= base_url('/app/customer/cart') ?>" class="transition hover:text-primary-700">Cart</a>
-                                <a href="<?= base_url('/app/customer/orders') ?>" class="transition hover:text-primary-700">Orders</a>
-                                <a href="<?= base_url('/app/customer/history') ?>" class="transition hover:text-primary-700">History</a>
-                                <a href="<?= base_url('/app/customer/profile') ?>" class="transition hover:text-primary-700">Profile</a>
+                                <a href="<?= esc($appCartUrl) ?>" class="transition hover:text-primary-700">Cart</a>
+                                <a href="<?= esc($appOrdersUrl) ?>" class="transition hover:text-primary-700">Orders</a>
+                                <a href="<?= esc($appHistoryUrl) ?>" class="transition hover:text-primary-700">History</a>
+                                <a href="<?= esc($appProfileUrl) ?>" class="transition hover:text-primary-700">Profile</a>
                             </nav>
                         </section>
                     </div>
@@ -345,7 +370,7 @@
                                 <i class="bi bi-bag-check"></i>
                                 Browse shop
                             </a>
-                            <a href="<?= base_url('/app/login') ?>" class="inline-flex items-center gap-2 rounded-2xl border border-dark-200 bg-white px-5 py-3 text-sm font-semibold text-dark-700 transition hover:border-primary-200 hover:text-primary-700">
+                            <a href="<?= base_url('/login') ?>" class="inline-flex items-center gap-2 rounded-2xl border border-dark-200 bg-white px-5 py-3 text-sm font-semibold text-dark-700 transition hover:border-primary-200 hover:text-primary-700">
                                 <i class="bi bi-box-arrow-in-right"></i>
                                 Open account
                             </a>
@@ -359,7 +384,7 @@
                     <div class="hidden md:flex flex-wrap items-center gap-4">
                         <a href="<?= base_url('/shop') ?>" class="transition hover:text-primary-700">Shop Accessories</a>
                         <a href="<?= base_url('/articles') ?>" class="transition hover:text-primary-700">Read Articles</a>
-                        <a href="<?= base_url('/app/customer/cart') ?>" class="transition hover:text-primary-700">Go to Cart</a>
+                        <a href="<?= esc($appCartUrl) ?>" class="transition hover:text-primary-700">Go to Cart</a>
                     </div>
                 </div>
             </div>

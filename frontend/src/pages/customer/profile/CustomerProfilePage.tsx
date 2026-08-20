@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { useAuthLogoutMutation } from "../../../api/auth/authQuery";
 import { PageHeader } from "../../../components/layout/PageHeader";
 import { Badge, Button, FormInput } from "../../../components/ui";
@@ -52,7 +51,6 @@ const courierOptions = [
 export const CustomerProfilePage = () => {
   usePageTitle("Profile");
 
-  const navigate = useNavigate();
   const user = useUser();
   const { logout } = useAuthActions();
   const { addToast } = useNotificationStore();
@@ -104,7 +102,7 @@ export const CustomerProfilePage = () => {
       onSettled: () => {
         queryClient.clear();
         logout();
-        navigate("/login");
+        window.location.replace("/login");
       },
     });
   };

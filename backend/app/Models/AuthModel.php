@@ -4,6 +4,13 @@ namespace App\Models;
 
 class AuthModel extends BaseModel
 {
+    protected $table            = 'app_users';
+    protected $primaryKey       = 'id';
+    protected $returnType       = 'array';
+    protected $useTimestamps    = true;
+    protected $createdField     = 'created_at';
+    protected $updatedField     = 'updated_at';
+
     public function getPasswordByUsernameOrEmail($value) {
         return $this->db->table('app_users')
             ->select('id, username, full_name, email, password')

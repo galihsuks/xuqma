@@ -5,7 +5,7 @@ Backend ini adalah fondasi API dan public web untuk `galih-base-app`.
 Project CodeIgniter ini menangani:
 - API untuk admin app React di `/api/*`
 - halaman public yang SEO-friendly seperti `/`, `/about`, dan `/articles`
-- autentikasi JWT
+- autentikasi web login + session CI4 + JWT cookie untuk app React
 - role, menu, menu control, role access control
 - logging backend dan logging frontend
 
@@ -45,8 +45,9 @@ Konsep route utamanya:
 
 ## Fitur Utama Backend
 
-- JWT login/logout
-- auth filter dengan bearer token
+- login web di `/login`
+- logout API untuk app React
+- auth filter dengan cookie JWT atau bearer token
 - response helper terpusat di `BaseController`
 - validation message yang human-friendly dan berbahasa Inggris
 - signature check untuk API unprotected tertentu
@@ -184,8 +185,8 @@ Tujuan halaman ini adalah:
 
 ## Auth
 
-- `POST /api/auth/login`
 - `POST /api/auth/logout`
+- `GET /api/auth/me`
 
 ## Access
 
@@ -228,11 +229,12 @@ Tujuan halaman ini adalah:
 
 Alur access control yang dipakai admin React:
 
-1. login via `/api/auth/login`
-2. backend return user + role
-3. frontend hit `/api/access/menu`
-4. frontend hit `/api/access/control/{menu_id}` sesuai halaman aktif
-5. frontend hide/show action berdasarkan code access
+1. user login via halaman CodeIgniter `/login`
+2. backend membuat session CI4 dan cookie `auth_token`
+3. frontend hit `/api/auth/me` untuk bootstrap user + role
+4. frontend hit `/api/access/menu`
+5. frontend hit `/api/access/control/{menu_id}` sesuai halaman aktif
+6. frontend hide/show action berdasarkan code access
 
 Jadi backend ini memang sudah disiapkan untuk pola menu-based access control.
 
@@ -249,9 +251,11 @@ Jadi backend ini memang sudah disiapkan untuk pola menu-based access control.
 Setelah migrate dan seed:
 
 1. login dengan akun super admin
-2. cek `GET /api/access/menu`
-3. cek `GET /api/access/control/{menu_id}`
-4. pastikan super admin bisa akses:
+2. cek cookie `auth_token` dan `ci_session` setelah login
+3. cek `GET /api/auth/me`
+4. cek `GET /api/access/menu`
+5. cek `GET /api/access/control/{menu_id}`
+6. pastikan super admin bisa akses:
    - menu
    - role
    - user

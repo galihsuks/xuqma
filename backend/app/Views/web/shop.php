@@ -13,10 +13,6 @@
                 Explore the gear people shop for most, from daily phone essentials to serious desktop upgrades and performance-focused components.
             </p>
         </div>
-        <a href="<?= base_url('/shop') ?>" class="hidden md:inline-flex items-center gap-2 text-sm font-semibold text-primary-700 hover:text-primary-600">
-            View all products
-            <i class="bi bi-arrow-right"></i>
-        </a>
     </div>
 </section>
 <section id="sticky-category" class="z-20 sticky top-[64px] mx-auto max-w-7xl px-0 pb-2 md:pb-6 lg:px-8 transition-all duration-300 bg-transparent">

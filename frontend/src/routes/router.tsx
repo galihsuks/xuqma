@@ -14,7 +14,6 @@ import {
   CustomerProfilePage,
   DashboardPage,
   LogPage,
-  LoginPage,
   MenuPage,
   OrderPage,
   OrderDetailPage,
@@ -30,8 +29,8 @@ export const appRouter = createBrowserRouter([
     element: <AppShell />,
     children: [
       {
+        path: "/login",
         element: <GuestRoute />,
-        children: [{ path: "/login", element: withSuspense(<LoginPage />) }],
       },
       {
         element: <PrivateRoute />,

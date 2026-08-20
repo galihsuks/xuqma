@@ -1,4 +1,7 @@
 export const queryKeys = {
+  auth: {
+    me: ["auth", "me"] as const,
+  },
   access: {
     menu: ["access", "menu"] as const,
     control: (menuId: string) => ["access", "control", menuId] as const,

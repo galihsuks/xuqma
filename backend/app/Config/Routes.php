@@ -44,6 +44,8 @@ $routes->options('(:any)', function () {
 // ─────────────────────────────────────────────────────────────────────────────
 // Public Routes (no auth needed)
 // ─────────────────────────────────────────────────────────────────────────────
+$routes->get('login', 'AuthController::loginPage');
+$routes->post('login', 'AuthController::loginSubmit');
 $routes->get('/', 'WebController::home');
 $routes->get('about', 'WebController::about');
 $routes->get('shop', 'WebController::shop');
@@ -55,7 +57,6 @@ $routes->group('api', function($routes) {
 
     // Auth
     $routes->group('auth', function ($routes) {
-        $routes->post('login',  'AuthController::login');
         $routes->post('logout', 'AuthController::logout');
     });
 
@@ -66,6 +67,7 @@ $routes->group('api', function($routes) {
     // Protected Routes — requires valid Bearer token
     // ─────────────────────────────────────────────────────────────────
     $routes->group('', ['filter' => 'auth'], function($routes) {
+        $routes->get('auth/me', 'AuthController::me');
         
         // Access
         $routes->group('access', function ($routes) {

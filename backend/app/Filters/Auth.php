@@ -13,6 +13,7 @@ use Firebase\JWT\Key;
 
 class Auth implements FilterInterface
 {
+    private const AUTH_COOKIE_NAME = 'auth_token';
     protected $tokenModel;
     protected $logModel;
 
@@ -42,20 +43,11 @@ class Auth implements FilterInterface
             $response->setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, X-Request-Id, Authorization, X-Signature, X-Timestamp');
         }
 
-        $header = $request->getHeaderLine('Authorization');
-        if (!$header) {
-            $this->logModel->warning('[401] Token not found', [], $request->getIPAddress());
-            return $response->setJSON(['message' => 'Token required'])->setStatusCode(401);
-        }
-
-        $token = null;
-        if (preg_match('/Bearer\s(\S+)/', $header, $matches)) {
-            $token = $matches[1];
-        }
+        $token = $this->resolveToken($request);
 
         if (!$token) {
             $this->logModel->warning('[401] Token not found', [], $request->getIPAddress());
-            return $response->setJSON(['message' => 'Token not found'])->setStatusCode(401);
+            return $response->setJSON(['message' => 'Token required'])->setStatusCode(401);
         }
 
         try {
@@ -78,6 +70,7 @@ class Auth implements FilterInterface
                 'id'    => $decoded->sub,
                 'email' => $decoded->email,
                 'role'  => $role,
+                'token' => $token,
             ];
         } catch (\Exception $e) {
             $this->tokenModel->destroyTokenByToken($token);
@@ -89,5 +82,17 @@ class Auth implements FilterInterface
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
         return $response;
+    }
+
+    private function resolveToken(RequestInterface $request): ?string
+    {
+        $header = (string) $request->getHeaderLine('Authorization');
+        if (preg_match('/Bearer\s(\S+)/', $header, $matches)) {
+            return $matches[1];
+        }
+
+        $cookieToken = trim((string) $request->getCookie(self::AUTH_COOKIE_NAME));
+
+        return $cookieToken !== '' ? $cookieToken : null;
     }
 }

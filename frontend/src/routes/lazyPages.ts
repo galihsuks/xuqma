@@ -1,9 +1,5 @@
 import { lazy } from "react";
 
-export const LoginPage = lazy(() =>
-  import("../pages/auth/login/LoginPage").then((module) => ({ default: module.LoginPage })),
-);
-
 export const DashboardPage = lazy(() =>
   import("../pages/main/dashboard/DashboardPage").then((module) => ({
     default: module.DashboardPage,

@@ -9,8 +9,3 @@ export interface User {
     name: string;
   } | null;
 }
-
-export interface LoginResponse {
-  token: string;
-  user: User;
-}

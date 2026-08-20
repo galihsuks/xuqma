@@ -1,41 +1,34 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 import type { User } from "../interfaces/auth";
 
 interface AuthState {
   user: User | null;
-  token: string | null;
   isAuthenticated: boolean;
+  isResolved: boolean;
   actions: {
-    login: (user: User, token: string) => void;
+    login: (user: User, token?: string | null) => void;
+    syncUser: (user: User | null) => void;
     logout: () => void;
   };
 }
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      user: null,
-      token: null,
-      isAuthenticated: false,
-      actions: {
-        login: (user, token) => set({ user, token, isAuthenticated: true }),
-        logout: () => {
-          set({ user: null, token: null, isAuthenticated: false });
-          localStorage.removeItem("auth-storage");
-        },
-      },
-    }),
-    {
-      name: "auth-storage",
-      partialize: (state) => ({
-        user: state.user,
-        token: state.token,
-        isAuthenticated: state.isAuthenticated,
+export const useAuthStore = create<AuthState>()((set) => ({
+  user: null,
+  isAuthenticated: false,
+  isResolved: false,
+  actions: {
+    login: (user) => set({ user, isAuthenticated: true, isResolved: true }),
+    syncUser: (user) =>
+      set({
+        user,
+        isAuthenticated: Boolean(user),
+        isResolved: true,
       }),
+    logout: () => {
+      set({ user: null, isAuthenticated: false, isResolved: true });
     },
-  ),
-);
+  },
+}));
 
 export const useAuthActions = () => useAuthStore((state) => state.actions);
 export const useUser = () => useAuthStore((state) => state.user);

@@ -38,7 +38,7 @@
                     <i class="bi bi-bag"></i>
                     Browse products
                 </a>
-                <a href="<?= base_url('/app/login') ?>" class="inline-flex items-center gap-2 rounded-2xl border border-dark-200 bg-white px-5 py-3 text-sm font-semibold text-dark-700 transition hover:border-primary-200 hover:text-primary-700">
+                <a href="<?= base_url('/login') ?>" class="inline-flex items-center gap-2 rounded-2xl border border-dark-200 bg-white px-5 py-3 text-sm font-semibold text-dark-700 transition hover:border-primary-200 hover:text-primary-700">
                     <i class="bi bi-box-arrow-in-right"></i>
                     Open app
                 </a>
