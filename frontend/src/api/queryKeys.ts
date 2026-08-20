@@ -1,4 +1,8 @@
 export const queryKeys = {
+  cart: {
+    current: ["cart", "current"] as const,
+    count: ["cart", "count"] as const,
+  },
   auth: {
     me: ["auth", "me"] as const,
   },

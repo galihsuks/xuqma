@@ -120,6 +120,10 @@ class OrderController extends BaseController
             $detail = $this->orderModel->getOrderById($created['id']);
             $detail['items'] = $this->orderItemModel->getItemsByOrderId($created['id']);
 
+            if (!$this->isPrivilegedOrderViewer()) {
+                $this->clearCustomerCartByUserId($this->getLoginUser('id'));
+            }
+
             return $this->created('Order created successfully', $detail);
         } catch (\Throwable $th) {
             return $this->serverError("There's a problem with the server, Contact us!", [

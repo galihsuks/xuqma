@@ -6,6 +6,8 @@ use CodeIgniter\Exceptions\PageNotFoundException;
 
 class WebController extends BaseController
 {
+    private const CART_FEEDBACK_FLASH_KEY = 'cart_feedback';
+
     public function home()
     {
         $categories = $this->getStorefrontCategories();
@@ -132,6 +134,95 @@ class WebController extends BaseController
         ]));
     }
 
+    public function addProductToCart(string $productId)
+    {
+        if ($redirect = $this->guardStorefrontCartAccess()) {
+            return $redirect;
+        }
+
+        $product = $this->productModel->getVisibleProductById($productId);
+        if ($product === null) {
+            return $this->redirectBackWithCartFeedback('error', 'Product unavailable', 'This product is no longer available in the storefront.');
+        }
+
+        $cart = $this->cartModel->getOrCreateCartByUserId((string) session('auth_user_id'));
+        $existingItem = $this->cartItemModel->getItemByCartAndProductId((string) $cart['id'], $productId);
+
+        if ($existingItem) {
+            $this->cartItemModel->update((string) $existingItem['id'], [
+                'qty' => (int) $existingItem['qty'] + 1,
+            ]);
+            $message = $product['name'] . ' quantity updated in your cart.';
+        } else {
+            $this->cartItemModel->insertCartItem([
+                'cart_id' => (string) $cart['id'],
+                'product_id' => $productId,
+                'qty' => 1,
+            ]);
+            $message = $product['name'] . ' has been added to your cart.';
+        }
+
+        $this->syncStorefrontCartTotalQty((string) $cart['id']);
+
+        return $this->redirectBackWithCartFeedback('success', 'Cart updated', $message);
+    }
+
+    public function incrementProductCartQty(string $productId)
+    {
+        if ($redirect = $this->guardStorefrontCartAccess()) {
+            return $redirect;
+        }
+
+        $cart = $this->cartModel->getCartByUserId((string) session('auth_user_id'));
+        if ($cart === null) {
+            return $this->redirectBackWithCartFeedback('error', 'Cart not found', 'Your cart is currently empty.');
+        }
+
+        $item = $this->cartItemModel->getItemByCartAndProductId((string) $cart['id'], $productId);
+        if ($item === null) {
+            return $this->redirectBackWithCartFeedback('error', 'Cart item not found', 'This product is not in your cart yet.');
+        }
+
+        $this->cartItemModel->update((string) $item['id'], [
+            'qty' => (int) $item['qty'] + 1,
+        ]);
+        $this->syncStorefrontCartTotalQty((string) $cart['id']);
+
+        return $this->redirectBackWithCartFeedback('success', 'Cart updated', 'Product quantity increased.');
+    }
+
+    public function decrementProductCartQty(string $productId)
+    {
+        if ($redirect = $this->guardStorefrontCartAccess()) {
+            return $redirect;
+        }
+
+        $cart = $this->cartModel->getCartByUserId((string) session('auth_user_id'));
+        if ($cart === null) {
+            return $this->redirectBackWithCartFeedback('error', 'Cart not found', 'Your cart is currently empty.');
+        }
+
+        $item = $this->cartItemModel->getItemByCartAndProductId((string) $cart['id'], $productId);
+        if ($item === null) {
+            return $this->redirectBackWithCartFeedback('error', 'Cart item not found', 'This product is not in your cart yet.');
+        }
+
+        $nextQty = (int) $item['qty'] - 1;
+        if ($nextQty <= 0) {
+            $this->cartItemModel->delete((string) $item['id']);
+            $message = 'Product removed from your cart.';
+        } else {
+            $this->cartItemModel->update((string) $item['id'], [
+                'qty' => $nextQty,
+            ]);
+            $message = 'Product quantity decreased.';
+        }
+
+        $this->syncStorefrontCartTotalQty((string) $cart['id']);
+
+        return $this->redirectBackWithCartFeedback('success', 'Cart updated', $message);
+    }
+
     private function buildPageData(array $data): array
     {
         $appName = getenv('app.name') ?: 'Xuqma';
@@ -144,6 +235,12 @@ class WebController extends BaseController
         $loginRoleCode = (string) session('auth_role_code');
         $isCustomerRole = $loginRoleCode === 'C';
         $showCustomerAppNav = !$isLoggedIn || $isCustomerRole;
+        $customerCartQtyMap = $isLoggedIn && $isCustomerRole
+            ? $this->resolveCustomerCartQtyMap((string) session('auth_user_id'))
+            : [];
+        $customerCartCount = $isLoggedIn && $isCustomerRole
+            ? $this->resolveCustomerCartCount((string) session('auth_user_id'))
+            : 0;
         
         return array_merge([
             'activeNav' => '',
@@ -152,8 +249,11 @@ class WebController extends BaseController
             'appHistoryUrl' => $this->buildAppNavUrl('/app/customer/history', $isLoggedIn),
             'appOrdersUrl' => $this->buildAppNavUrl('/app/customer/orders', $isLoggedIn),
             'appProfileUrl' => $this->buildAppNavUrl('/app/customer/profile', $isLoggedIn),
+            'cartFeedback' => session()->getFlashdata(self::CART_FEEDBACK_FLASH_KEY),
+            'customerCartQtyMap' => $customerCartQtyMap,
             'canonicalUrl' => $canonicalUrl,
             'currentPath' => $currentPath,
+            'customerCartCount' => $customerCartCount,
             'description' => $appName,
             'isMobile' => $isMobile,
             'isCustomerRole' => $isCustomerRole,
@@ -176,6 +276,81 @@ class WebController extends BaseController
             return base_url('/login');
         }
         return base_url('/login?redirect=' . urlencode($targetPath));
+    }
+
+    private function resolveCustomerCartCount(string $userId): int
+    {
+        $resolvedUserId = trim($userId);
+        if ($resolvedUserId === '') {
+            return 0;
+        }
+
+        $cart = $this->cartModel->getCartByUserId($resolvedUserId);
+        if ($cart === null) {
+            return 0;
+        }
+
+        return (int) ($cart['total_qty'] ?? 0);
+    }
+
+    private function resolveCustomerCartQtyMap(string $userId): array
+    {
+        $resolvedUserId = trim($userId);
+        if ($resolvedUserId === '') {
+            return [];
+        }
+
+        $cart = $this->cartModel->getCartByUserId($resolvedUserId);
+        if ($cart === null) {
+            return [];
+        }
+
+        $items = $this->cartItemModel->getItemsByCartId((string) $cart['id']);
+        $result = [];
+        foreach ($items as $item) {
+            $productId = (string) ($item['product_id'] ?? '');
+            if ($productId === '') {
+                continue;
+            }
+
+            $result[$productId] = (int) ($item['qty'] ?? 0);
+        }
+
+        return $result;
+    }
+
+    private function guardStorefrontCartAccess()
+    {
+        if (!(bool) session('is_authenticated')) {
+            return redirect()->to(base_url('/login?redirect=' . urlencode($this->request->getServer('HTTP_REFERER') ? (string) parse_url((string) $this->request->getServer('HTTP_REFERER'), PHP_URL_PATH) : '/shop')));
+        }
+
+        if ((string) session('auth_role_code') !== 'C') {
+            return $this->redirectBackWithCartFeedback('error', 'Customer access only', 'Only customer accounts can manage storefront cart items.');
+        }
+
+        return null;
+    }
+
+    private function syncStorefrontCartTotalQty(string $cartId): void
+    {
+        $items = $this->cartItemModel->getItemsByCartId($cartId);
+        $totalQty = array_reduce($items, static function ($carry, array $item) {
+            return $carry + (int) ($item['qty'] ?? 0);
+        }, 0);
+
+        $this->cartModel->updateTotalQty($cartId, $totalQty);
+    }
+
+    private function redirectBackWithCartFeedback(string $tone, string $title, string $message)
+    {
+        session()->setFlashdata(self::CART_FEEDBACK_FLASH_KEY, [
+            'tone' => $tone,
+            'title' => $title,
+            'message' => $message,
+        ]);
+
+        return redirect()->back();
     }
 
     private function getStorefrontCategories(): array

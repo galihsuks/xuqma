@@ -1,21 +1,32 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreditCard, MapPinned, Minus, Plus, ShieldCheck, ShoppingCart, Trash2, Truck, WalletCards } from "lucide-react";
+import {
+  CreditCard,
+  MapPinned,
+  Minus,
+  Plus,
+  ShieldCheck,
+  ShoppingCart,
+  Trash2,
+  Truck,
+  WalletCards,
+} from "lucide-react";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import {
+  useCartQuery,
+  useClearCartMutation,
+  useRemoveCartItemMutation,
+  useUpdateCartItemMutation,
+} from "../../../api/cart/cartQuery";
 import { PageHeader } from "../../../components/layout/PageHeader";
 import { Badge, Button, FormInput } from "../../../components/ui";
-import { useProductDetailQuery } from "../../../api/product/productQuery";
 import { useCreateOrderMutation } from "../../../api/order/orderQuery";
 import { usePageTitle } from "../../../hooks/usePageTitle";
 import { queryKeys } from "../../../api/queryKeys";
 import { useApiFormError } from "../../../hooks/useApiFormError";
 import { useUser } from "../../../store/authStore";
-import {
-  useCustomerCartActions,
-  useCustomerCartItems,
-} from "../../../store/customerCartStore";
 import {
   useCustomerDefaultAddress,
   useCustomerPreferredCourierService,
@@ -53,7 +64,6 @@ export const CustomerCartPage = () => {
 
   const user = useUser();
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const { addToast } = useNotificationStore();
   const { handleApiFormError } = useApiFormError({ logEvent: "customer_checkout_failed" });
@@ -61,45 +71,25 @@ export const CustomerCartPage = () => {
   const preferredPhone = useCustomerPreferredPhone();
   const preferredCourierService = useCustomerPreferredCourierService();
   const preferredPaymentMethod = useCustomerPreferredPaymentMethod();
-  const addProductId = searchParams.get("add_product") ?? "";
-  const addQty = Math.max(1, Number(searchParams.get("qty") ?? "1") || 1);
-  const { data: directProductDetailData } = useProductDetailQuery(addProductId);
+  const { data: cartData } = useCartQuery();
   const { mutate: createOrderMutation, isPending: isCheckoutPending } = useCreateOrderMutation();
-  const cartItems = useCustomerCartItems();
-  const { addItem, clearCart, removeItem, updateQty } = useCustomerCartActions();
-  const { control, getValues, handleSubmit, reset, setValue } = useForm<CustomerCheckoutSchemaType>({
-    resolver: zodResolver(customerCheckoutSchema),
-    defaultValues: {
-      customer_phone: preferredPhone || defaultAddress?.phone || "",
-      shipping_address: defaultAddress?.address || "",
-      courier_service: preferredCourierService,
-      payment_method: preferredPaymentMethod,
-      order_note: "",
-    },
-  });
-
-  useEffect(() => {
-    const selectedProduct = directProductDetailData?.data;
-    if (!addProductId || !selectedProduct) {
-      return;
-    }
-
-    addItem(
-      {
-        product_id: selectedProduct.id,
-        product_name: selectedProduct.name,
-        category_name: selectedProduct.category_name,
-        price: Number(selectedProduct.price),
+  const { mutate: updateCartItemMutation } = useUpdateCartItemMutation();
+  const { mutate: removeCartItemMutation } = useRemoveCartItemMutation();
+  const { mutate: clearCartMutation } = useClearCartMutation();
+  const cart = cartData?.data;
+  const cartItems = cart?.items ?? [];
+  const { control, getValues, handleSubmit, reset, setValue } = useForm<CustomerCheckoutSchemaType>(
+    {
+      resolver: zodResolver(customerCheckoutSchema),
+      defaultValues: {
+        customer_phone: preferredPhone || defaultAddress?.phone || "",
+        shipping_address: defaultAddress?.address || "",
+        courier_service: preferredCourierService,
+        payment_method: preferredPaymentMethod,
+        order_note: "",
       },
-      addQty,
-    );
-
-    const nextParams = new URLSearchParams(searchParams);
-    nextParams.delete("add_product");
-    nextParams.delete("qty");
-    setSearchParams(nextParams, { replace: true });
-    addToast(`${selectedProduct.name} added to cart.`, "success");
-  }, [addItem, addProductId, addQty, addToast, directProductDetailData?.data, searchParams, setSearchParams]);
+    },
+  );
 
   useEffect(() => {
     if (getValues("customer_phone").trim() === "" && preferredPhone !== "") {
@@ -126,7 +116,10 @@ export const CustomerCartPage = () => {
     setValue,
   ]);
 
-  const itemSubtotal = cartItems.reduce((total, item) => total + item.price * item.qty, 0);
+  const itemSubtotal = cartItems.reduce(
+    (total, item) => total + Number(item.price) * Number(item.qty),
+    0,
+  );
   const shippingProtection = cartItems.length > 0 ? 25000 : 0;
   const estimatedShipping = cartItems.length > 0 ? 40000 : 0;
   const grandTotal = itemSubtotal + shippingProtection + estimatedShipping;
@@ -160,7 +153,7 @@ export const CustomerCartPage = () => {
         notes: noteLines.join("\n"),
         items: cartItems.map((item) => ({
           product_id: item.product_id,
-          product_name: item.product_name,
+          product_name: item.product_name ?? "",
           qty: item.qty,
           unit_price: item.price,
         })),
@@ -168,9 +161,11 @@ export const CustomerCartPage = () => {
       {
         onSuccess: (response) => {
           addToast(response.message, "success");
-          clearCart();
+          clearCartMutation();
           void queryClient.invalidateQueries({ queryKey: ["order"] });
           void queryClient.invalidateQueries({ queryKey: queryKeys.order.list({}) });
+          void queryClient.invalidateQueries({ queryKey: queryKeys.cart.current });
+          void queryClient.invalidateQueries({ queryKey: queryKeys.cart.count });
           reset();
           if (response.data?.id) {
             navigate(`/customer/orders/${response.data.id}`);
@@ -218,13 +213,17 @@ export const CustomerCartPage = () => {
                 <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                   <div>
                     <Badge variant="secondary-outline">{item.category_name}</Badge>
-                    <h2 className="mt-3 text-xl font-semibold text-dark-900">{item.product_name}</h2>
-                    <p className="mt-2 text-sm text-dark-500">Unit price: {formatCurrency(item.price)}</p>
+                    <h2 className="mt-3 text-xl font-semibold text-dark-900">
+                      {item.product_name}
+                    </h2>
+                    <p className="mt-2 text-sm text-dark-500">
+                      Unit price: {formatCurrency(Number(item.price))}
+                    </p>
                   </div>
                   <div className="text-left md:text-right">
                     <p className="text-sm text-dark-500">Subtotal</p>
                     <p className="text-xl font-semibold text-primary-700">
-                      {formatCurrency(item.price * item.qty)}
+                      {formatCurrency(Number(item.price) * Number(item.qty))}
                     </p>
                   </div>
                 </div>
@@ -235,7 +234,12 @@ export const CustomerCartPage = () => {
                       type="button"
                       variant="light-outline"
                       icon={Minus}
-                      onClick={() => updateQty(item.product_id, Math.max(1, item.qty - 1))}
+                      onClick={() =>
+                        updateCartItemMutation({
+                          productId: item.product_id,
+                          payload: { qty: Math.max(1, Number(item.qty) - 1) },
+                        })
+                      }
                     />
                     <span className="min-w-10 text-center text-sm font-semibold text-dark-900">
                       {item.qty}
@@ -244,7 +248,12 @@ export const CustomerCartPage = () => {
                       type="button"
                       variant="light-outline"
                       icon={Plus}
-                      onClick={() => updateQty(item.product_id, item.qty + 1)}
+                      onClick={() =>
+                        updateCartItemMutation({
+                          productId: item.product_id,
+                          payload: { qty: Number(item.qty) + 1 },
+                        })
+                      }
                     />
                   </div>
 
@@ -252,10 +261,8 @@ export const CustomerCartPage = () => {
                     type="button"
                     variant="danger-outline"
                     icon={Trash2}
-                    onClick={() => removeItem(item.product_id)}
-                  >
-                    Remove
-                  </Button>
+                    onClick={() => removeCartItemMutation(item.product_id)}
+                  />
                 </div>
               </article>
             ))
@@ -286,11 +293,7 @@ export const CustomerCartPage = () => {
                     </p>
                     <p className="mt-1 text-sm text-dark-500">{defaultAddress.address}</p>
                   </div>
-                  <Button
-                    type="link"
-                    link="/customer/profile"
-                    variant="primary-outline"
-                  >
+                  <Button type="link" link="/customer/profile" variant="primary-outline">
                     Manage Address Book
                   </Button>
                 </div>
@@ -298,9 +301,15 @@ export const CustomerCartPage = () => {
             ) : (
               <div className="mt-5 rounded-2xl border border-dark-200 bg-light-50 p-4">
                 <p className="text-sm text-dark-600">
-                  No default address saved yet. You can still check out manually, or save one in your profile.
+                  No default address saved yet. You can still check out manually, or save one in
+                  your profile.
                 </p>
-                <Button type="link" link="/customer/profile" variant="secondary-outline" className="mt-3">
+                <Button
+                  type="link"
+                  link="/customer/profile"
+                  variant="secondary-outline"
+                  className="mt-3"
+                >
                   Open Customer Profile
                 </Button>
               </div>
@@ -372,9 +381,12 @@ export const CustomerCartPage = () => {
               <div className="flex items-start gap-3">
                 <WalletCards className="mt-0.5 h-5 w-5 text-primary-300" />
                 <div className="text-sm text-white/80">
-                  <p className="font-semibold text-white">Checkout details are saved with the order</p>
+                  <p className="font-semibold text-white">
+                    Checkout details are saved with the order
+                  </p>
                   <p className="mt-1">
-                    Phone number stays in the dedicated field, while address and payment preferences are recorded in order notes.
+                    Phone number stays in the dedicated field, while address and payment preferences
+                    are recorded in order notes.
                   </p>
                 </div>
               </div>
@@ -402,7 +414,8 @@ export const CustomerCartPage = () => {
               <div>
                 <p className="font-semibold text-dark-900">Scoped to your account</p>
                 <p className="text-sm text-dark-500">
-                  New orders created from this cart are automatically attached to your signed-in identity.
+                  New orders created from this cart are automatically attached to your signed-in
+                  identity.
                 </p>
               </div>
             </div>

@@ -1,5 +1,7 @@
-<?php $cartUrl = base_url('/app/customer/cart?add_product=' . urlencode((string) $product['id']) . '&qty=1'); ?>
-<?php $loginUrl = base_url('/login?redirect=' . urlencode('/app/customer/cart?add_product=' . (string) $product['id'] . '&qty=1')); ?>
+<?php
+$productId = (string) $product['id'];
+$cartQty = (int) (($customerCartQtyMap[$productId] ?? 0));
+?>
 <?= $this->extend('web/layouts/app') ?>
 
 <?= $this->section('content') ?>
@@ -49,14 +51,42 @@
             <?php endif; ?>
 
             <div class="mt-8 flex flex-wrap gap-3">
-                <a href="<?= esc($cartUrl) ?>" class="inline-flex items-center gap-2 rounded-2xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-200/70 transition hover:bg-primary-500">
-                    <i class="bi bi-cart-plus"></i>
-                    Add to cart in app
-                </a>
-                <a href="<?= esc($loginUrl) ?>" class="inline-flex items-center gap-2 rounded-2xl border border-dark-200 bg-white px-6 py-3 text-sm font-semibold text-dark-700 transition hover:border-primary-200 hover:text-primary-700">
-                    <i class="bi bi-box-arrow-in-right"></i>
-                    Sign in and continue
-                </a>
+                <?php if (!$isLoggedIn): ?>
+                    <a href="<?= base_url('/login') ?>" class="inline-flex items-center gap-2 rounded-2xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-200/70 transition hover:bg-primary-500">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Sign in to shop
+                    </a>
+                <?php elseif (!$isCustomerRole): ?>
+                    <a href="<?= esc($appProfileUrl) ?>" class="inline-flex items-center gap-2 rounded-2xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-200/70 transition hover:bg-primary-500">
+                        <i class="bi bi-person-circle"></i>
+                        Open profile
+                    </a>
+                <?php elseif ($cartQty > 0): ?>
+                    <div class="inline-flex items-center gap-2 rounded-2xl border border-dark-200 bg-white px-3 py-3 text-sm font-semibold text-dark-700">
+                        <form action="<?= base_url('/cart/items/' . urlencode($productId) . '/decrement') ?>" method="post">
+                            <button type="submit" class="inline-flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-primary-50 hover:text-primary-700">
+                                <i class="bi bi-dash text-lg"></i>
+                            </button>
+                        </form>
+                        <span class="min-w-8 text-center text-base font-semibold text-dark-900"><?= esc((string) $cartQty) ?></span>
+                        <form action="<?= base_url('/cart/items/' . urlencode($productId) . '/increment') ?>" method="post">
+                            <button type="submit" class="inline-flex h-9 w-9 items-center justify-center rounded-full transition hover:bg-primary-50 hover:text-primary-700">
+                                <i class="bi bi-plus text-lg"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <a href="<?= esc($appCartUrl) ?>" class="inline-flex items-center gap-2 rounded-2xl border border-dark-200 bg-white px-6 py-3 text-sm font-semibold text-dark-700 transition hover:border-primary-200 hover:text-primary-700">
+                        <i class="bi bi-bag"></i>
+                        View cart
+                    </a>
+                <?php else: ?>
+                    <form action="<?= base_url('/cart/items/' . urlencode($productId) . '/add') ?>" method="post">
+                        <button type="submit" class="inline-flex items-center gap-2 rounded-2xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-200/70 transition hover:bg-primary-500">
+                            <i class="bi bi-cart-plus"></i>
+                            Add to cart
+                        </button>
+                    </form>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -76,7 +106,13 @@
 
             <div class="mt-8 grid gap-6 lg:grid-cols-3">
                 <?php foreach ($relatedProducts as $relatedProduct): ?>
-                    <?= view('web/partials/product_card', ['product' => $relatedProduct]) ?>
+                    <?= view('web/partials/product_card', [
+                        'product' => $relatedProduct,
+                        'appProfileUrl' => $appProfileUrl,
+                        'customerCartQtyMap' => $customerCartQtyMap,
+                        'isCustomerRole' => $isCustomerRole,
+                        'isLoggedIn' => $isLoggedIn,
+                    ]) ?>
                 <?php endforeach; ?>
             </div>
         </section>

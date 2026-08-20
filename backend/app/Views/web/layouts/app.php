@@ -153,6 +153,35 @@
 <body class="text-dark-900">
     <div class="absolute h-screen w-[100%] z-0 bg-[radial-gradient(circle_at_top_left,rgba(244,114,182,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(167,139,250,0.22),transparent_24%),linear-gradient(180deg,var(--color-light-100),white)]"></div>
     <div class="absolute min-h-screen w-[100%] z-1 pb-24 md:pb-0">
+        <?php if (!empty($cartFeedback)): ?>
+            <div class="fixed inset-0 z-50 flex items-center justify-center bg-dark-900/45 px-4 backdrop-blur-[2px]" data-cart-feedback-modal>
+                <div class="w-full max-w-md rounded-[28px] border border-white/70 bg-white p-6 shadow-[0_32px_100px_-42px_rgba(124,58,237,0.45)]">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <span class="<?= ($cartFeedback['tone'] ?? '') === 'success'
+                                ? 'inline-flex rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary-700'
+                                : 'inline-flex rounded-full bg-secondary-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-secondary-700' ?>">
+                                <?= esc(($cartFeedback['tone'] ?? 'info') === 'success' ? 'Cart updated' : 'Notice') ?>
+                            </span>
+                            <h2 class="mt-4 text-2xl font-bold tracking-tight text-dark-900"><?= esc($cartFeedback['title'] ?? 'Cart feedback') ?></h2>
+                            <p class="mt-3 text-sm leading-7 text-dark-600"><?= esc($cartFeedback['message'] ?? '') ?></p>
+                        </div>
+                        <button type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-full text-dark-500 transition hover:bg-primary-50 hover:text-primary-700" data-close-cart-feedback>
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <a href="<?= esc($appCartUrl) ?>" class="inline-flex items-center gap-2 rounded-2xl bg-primary-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-primary-200/70 transition hover:bg-primary-500">
+                            <i class="bi bi-bag-check"></i>
+                            Open cart
+                        </a>
+                        <button type="button" class="inline-flex items-center gap-2 rounded-2xl border border-dark-200 bg-white px-5 py-3 text-sm font-semibold text-dark-700 transition hover:border-primary-200 hover:text-primary-700" data-close-cart-feedback>
+                            Continue browsing
+                        </button>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
         <header class="sticky top-0 z-30 border-b border-white/70 bg-white/80 backdrop-blur-xl h-[65px] md:h-auto">
             <div class="relative mx-auto flex max-w-7xl items-center justify-between px-5 py-3 lg:px-8 h-full">
                 <div class="flex-1">
@@ -203,9 +232,9 @@
                                     class="<?= $item['display']; ?> relative rounded-full px-3 py-3 text-sm font-semibold text-dark-600 transition hover:bg-primary-50 hover:text-primary-700"
                                 >
                                     <i class="block -translate-y-[3px] translate-x-[2px] h-4 w-4 bi <?= $item['icon']; ?>"></i>
-                                    <?php if ($item['icon'] === 'bi-bag'): ?>
+                                    <?php if ($item['icon'] === 'bi-bag' && (int) ($customerCartCount ?? 0) > 0): ?>
                                         <span class="absolute right-0.5 top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-secondary-500 px-1 text-[10px] font-bold leading-none text-white">
-                                            3
+                                            <?= esc((string) $customerCartCount) ?>
                                         </span>
                                     <?php endif; ?>
                                 </a>
@@ -304,9 +333,9 @@
                         >
                             <i class="bi <?= esc($item['icon']) ?> text-base"></i>
                             <span class="text-[9px] font-semibold"><?= esc($item['label']) ?></span>
-                            <?php if ($item['icon'] === 'bi-bag'): ?>
+                            <?php if ($item['icon'] === 'bi-bag' && (int) ($customerCartCount ?? 0) > 0): ?>
                                 <span class="absolute right-2.5 top-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-secondary-500 px-1 text-[10px] font-bold leading-none text-white">
-                                    3
+                                    <?= esc((string) $customerCartCount) ?>
                                 </span>
                             <?php endif; ?>
                         </a>
@@ -390,5 +419,25 @@
             </div>
         </footer>
     </div>
+    <?php if (!empty($cartFeedback)): ?>
+        <script>
+            (() => {
+                const modal = document.querySelector('[data-cart-feedback-modal]');
+                if (!modal) return;
+
+                modal.querySelectorAll('[data-close-cart-feedback]').forEach((button) => {
+                    button.addEventListener('click', () => {
+                        modal.remove();
+                    });
+                });
+
+                modal.addEventListener('click', (event) => {
+                    if (event.target === modal) {
+                        modal.remove();
+                    }
+                });
+            })();
+        </script>
+    <?php endif; ?>
 </body>
 </html>

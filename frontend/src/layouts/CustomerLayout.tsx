@@ -1,5 +1,6 @@
 import { Handbag, Package, ReceiptText, UserRound } from "lucide-react";
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { useCartCountQuery } from "../api/cart/cartQuery";
 import { AppLogo } from "../components/shared/AppLogo";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { cn } from "../utils/cn";
@@ -21,6 +22,8 @@ export const CustomerLayout = () => {
   usePageTitle("Customer Workspace");
 
   const location = useLocation();
+  const { data: cartCountData } = useCartCountQuery();
+  const cartCount = Number(cartCountData?.data?.total_qty ?? 0);
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(244,114,182,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(167,139,250,0.22),transparent_24%),linear-gradient(180deg,var(--color-light-100),white)]">
@@ -60,13 +63,18 @@ export const CustomerLayout = () => {
                     key={item.path}
                     to={item.path}
                     className={cn(
-                      "rounded-full px-3 py-3 text-sm font-semibold",
+                      "relative rounded-full px-3 py-3 text-sm font-semibold",
                       active
                         ? "text-primary-600"
                         : "text-dark-600 transition hover:bg-primary-50 hover:text-primary-700",
                     )}
                   >
                     <Icon className="h-4 w-4" />
+                    {item.path === "/customer/cart" && cartCount > 0 ? (
+                      <span className="absolute right-0.5 top-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-secondary-500 px-1 text-[10px] font-bold leading-none text-white">
+                        {cartCount}
+                      </span>
+                    ) : null}
                   </Link>
                 );
               })}

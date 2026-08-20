@@ -49,6 +49,9 @@ $routes->post('login', 'AuthController::loginSubmit');
 $routes->get('/', 'WebController::home');
 $routes->get('about', 'WebController::about');
 $routes->get('shop', 'WebController::shop');
+$routes->post('cart/items/(:segment)/add', 'WebController::addProductToCart/$1');
+$routes->post('cart/items/(:segment)/increment', 'WebController::incrementProductCartQty/$1');
+$routes->post('cart/items/(:segment)/decrement', 'WebController::decrementProductCartQty/$1');
 $routes->get('category/(:segment)', 'WebController::category/$1');
 $routes->get('products/(:segment)', 'WebController::productDetail/$1');
 $routes->get('articles', 'WebController::articles');
@@ -165,6 +168,16 @@ $routes->group('api', function($routes) {
             $routes->get('(:any)',      'OrderController::detail/$1');
             $routes->put('(:any)',      'OrderController::edit/$1');
             $routes->delete('(:any)',   'OrderController::destroy/$1');
+        });
+
+        // Cart
+        $routes->group('cart', function ($routes) {
+            $routes->get('/', 'CartController::index');
+            $routes->get('count', 'CartController::count');
+            $routes->post('items', 'CartController::addItem');
+            $routes->put('items/(:any)', 'CartController::updateItem/$1');
+            $routes->delete('items/(:any)', 'CartController::destroyItem/$1');
+            $routes->delete('clear', 'CartController::clear');
         });
 
         // Log

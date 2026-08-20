@@ -41,6 +41,14 @@ class ProductModel extends BaseModel
             ->first();
     }
 
+    public function getVisibleProductById(string $id)
+    {
+        return $this->baseSelect()
+            ->where('products.id', $id)
+            ->where('products.display', 1)
+            ->first();
+    }
+
     public function getProductBySlug(string $slug)
     {
         return $this->baseSelect()

@@ -117,7 +117,13 @@
     <?php if (!empty($featuredProducts)): ?>
         <div class="mt-8 grid gap-3 md:gap-6 grid-cols-2 lg:grid-cols-3">
             <?php foreach ($featuredProducts as $product): ?>
-                <?= view('web/partials/product_card', ['product' => $product]) ?>
+                <?= view('web/partials/product_card', [
+                    'product' => $product,
+                    'appProfileUrl' => $appProfileUrl,
+                    'customerCartQtyMap' => $customerCartQtyMap,
+                    'isCustomerRole' => $isCustomerRole,
+                    'isLoggedIn' => $isLoggedIn,
+                ]) ?>
             <?php endforeach; ?>
         </div>
     <?php else: ?>

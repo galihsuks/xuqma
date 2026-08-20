@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Models\AppSupportModel;
+use App\Models\CartItemModel;
+use App\Models\CartModel;
 use App\Models\LogModel;
 use App\Models\MenuControlModel;
 use App\Models\MenuModel;
@@ -98,7 +100,17 @@ abstract class BaseController extends Controller
     protected $productModel;
 
     /**
-     * @var ArticleModel
+     * @var CartModel
+    */
+    protected $cartModel;
+
+    /**
+     * @var CartItemModel
+    */
+    protected $cartItemModel;
+
+    /**
+    * @var ArticleModel
     */
     protected $articleModel;
 
@@ -134,6 +146,8 @@ abstract class BaseController extends Controller
         $this->roleMenuControlModel = new RoleMenuControlModel();
         $this->productCategoryModel = new ProductCategoryModel();
         $this->productModel = new ProductModel();
+        $this->cartModel = new CartModel();
+        $this->cartItemModel = new CartItemModel();
         $this->articleModel = new ArticleModel();
         $this->orderModel = new OrderModel();
         $this->orderItemModel = new OrderItemModel();
@@ -414,5 +428,21 @@ abstract class BaseController extends Controller
     private function humanizeFieldLabel(string $field): string
     {
         return ucfirst(str_replace('_', ' ', $field));
+    }
+
+    protected function clearCustomerCartByUserId(?string $userId): void
+    {
+        $resolvedUserId = trim((string) $userId);
+        if ($resolvedUserId === '') {
+            return;
+        }
+
+        $cart = $this->cartModel->getCartByUserId($resolvedUserId);
+        if ($cart === null) {
+            return;
+        }
+
+        $this->cartItemModel->destroyByCartId((string) $cart['id']);
+        $this->cartModel->updateTotalQty((string) $cart['id'], 0);
     }
 }
